@@ -151,6 +151,7 @@ primary_energy_consumption_df <- primary_energy_consumption[5:87,] %>%
 
 # GGally::ggparcoord(primary_energy_consumption_df, columns=9:14, scale="uniminmax", title="PCP")
 # Create an interactive parallel coordinate plot.
+# Cannot fct reorder countries
 parcoords::parcoords(primary_energy_consumption_df,
   rownames = FALSE,
   alpha = 0.5,
@@ -325,4 +326,27 @@ data <- data.frame(oil_df, gas_df, carbon_df)
 
 # Write
 #write.csv(data,'data_many_countries.csv', row.names = TRUE)
+```
+
+```{r}
+# Data Processing for D3 World Map Interactive Component
+carbon <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Dioxide Emissions")
+carbon_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
+carbon_df <- tail(carbon_df, 1)
+
+renewable <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Renewables - TWh")
+renewable_df <- process_space_time_data(renewable, x_start=1, x_end=55, y_start=4, y_end=107)
+renewable_df <- tail(renewable_df, 1)
+
+carbon_df <- carbon_df %>% 
+  gather(-year, key = "country", value = "emissions") %>%
+  select(c("country", "emissions"))
+
+renewable_df <- renewable_df %>% 
+  gather(-year, key = "country", value = "renewables") %>%
+  select(c("country", "renewables"))
+  
+temp <- data.frame(carbon_df, renewable_df) %>% select(c('country', emissions, renewables))
+
+write.csv(temp,'temp.csv', row.names = TRUE)
 ```

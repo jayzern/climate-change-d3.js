@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Boxplots</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+    </style>
+  </head>
+
+	<body>
+
+		<div style="padding: 50px; float:left;">
+		</div>
+
+		<div id="chart" style="width: 400px; float:left;">
+			<h3>Create a boxplot</h3>
+      <div>
+        <input type="radio" name="boxplot" value="add" checked="checked">Add points<br>
+        <input type="radio" name="boxplot" value="remove">Remove points<br>
+      </div>
+			<p>Click in the center of the blue strip to add points.</p>
+      <svg width="200" height="500">
+
+      </svg>
+    </div>
+
+
+		<div style="width: 600px; float: left; word-wrap: break-word;">
+      <h3>Authors: Jay Zern Ng (jn2717) and Priya Rajbabu (pr2612) </h3>
+
+      <h3>How to Read a Boxplot</h3>
+			<p>[Data points are displayed as ordered, rounded values.]</p>
+      <p>[Note that all the data points are <b>binded</b> to the circle,
+        meaning we do not need to keep track of an independent array!! :)]</p>
+      <p>[Outliers are values that are 1.5*IQR beyond the first or
+        third quartile, colored as <font color="red">red points</font>]</p>
+      <p>[Upper whiskers are calculated based on the largest observation such that
+        it is less than 1.5*IQR from the upper quartile]</p>
+      <p>[Upper quartile based on the 75th percentile of the data]</p>
+      <p>[Median based on the 50th percentile of the data]</p>
+      <p>[Lower quartile based on the 25th percentile of the data]</p>
+      <p>[Lower whiskers are calculated based on the smallest observation such that
+        it is greater than 1.5*IQR from the lower quartile]</p>
+
+      <p><b>Data values:</b><span id="values"></span></p>
+      <p><b>Outliers:</b><span id="outliers"></span></p>
+      <p><b>Upper whisker:</b><span id="upper_whisker"></span></p>
+      <p><b>Q3:</b><span id="Q3"></span></p>
+      <p><b>Median:</b><span id="median"></span></p>
+      <p><b>Q1:</b><span id="Q1"></span></p>
+      <p><b>Lower whisker:</b><span id="lower_whisker"></span></p>
+
+		</div>
+
+
+		<script type="text/javascript">
+
+    var option = "add" // Switch for add/remove
+    var svg = d3.select("svg");
+    var width = 200;
+    var height = 500;
+    var margin = {top: 10, right: 0, bottom: 10, left: 50};
+    var innerWidth = width - margin.left - margin.right;
+    var innerHeight = height - margin.top - margin.bottom;
+    var noBoxPlot = true // Switch for transition
+    var yScale = d3.scaleLinear() // Create scales
+      .domain([100,-100])
+      .range([0,innerHeight]);
+    var yAxis = d3.axisLeft() // Add scales to axis
+      .scale(yScale)
+      .ticks(20);
+
+    // Initialize rect to click on
+    svg.append("rect")
+      .attr("transform",
+            `translate (${margin.left},
+                        ${margin.top})`)
+      .attr("width", innerWidth)
+      .attr("height", innerHeight)
+      .attr("fill", "lightblue")
+      .style("z-index", 75)
+
+
+    // Intiliaze axis/scales
+    svg.append("g")
+      .attr("transform",
+            `translate (${margin.left - 20},
+                      ${margin.top})`)
+      .call(yAxis);
+
+    // Handle switch for add/remove
+    d3.selectAll('input')
+      .on('change', function(d) {
+        option = this.value
+      });
+
+    // Handle clicks
+    svg.selectAll("rect").on("click", function() {
+      if (option == "add") {
+        var coords = d3.mouse(this);
+        var value = Math.round(coords[1]);
+        svg.append("circle")
+          .attr("transform",
+                `translate (${margin.left},
+                          ${margin.top})`)
+          .attr("cx", coords[0])
+          .attr("cy", value)
+          .attr("r", 3)
+          .style("z-index", 1000)
+        .on("click", function(d) {
+          if (option == "remove") {
+            this.remove()
+            // Update summary stats and boxplot
+            updateSummary(svg.selectAll("circle").data());
+          }
+        });
+
+
+        if (svg.selectAll("circle").data()[0] === undefined) {
+          // HACKY way of checking if first point added
+          svg.selectAll("circle").data([Math.round(yScale.invert(value))]);
+        } else {
+          // Otherwise there is already an existing point, then update binded data
+          // Step 1. Get binded data
+          var data = svg.selectAll("circle").data();
+          // Step 2. Update values by replacement
+          data.pop()
+          data.push(Math.round(yScale.invert(value)))
+          // Step 3. Update binded data
+          svg.selectAll("circle").data(data)
+        }
+        // Update summary stats and boxplot
+        updateSummary(svg.selectAll("circle").data());
+      }
+    });
+
+    function updateSummary(data) {
+      // This function updates summary stats and box plot
+
+      // sort data first
+      var data_sorted = data.sort(d3.ascending)
+
+      // Get summary stats
+      var Q3 = Math.round(d3.quantile(data_sorted, 0.75));
+      var median = Math.round(d3.quantile(data_sorted, 0.5));
+      var Q1 = Math.round(d3.quantile(data_sorted, 0.25));
+      var IQR = Math.abs(Q3 - Q1);
+
+      // Get limits to determine whiskers and outliers
+      var upper_limit = Math.round(Q3 + 1.5 * IQR);
+      var lower_limit = Math.round(Q1 - 1.5 * IQR);
+
+      // Whiskers: Find largest/smallest points s.t. they are not outliers based
+      // on upper/lower limit
+      var upper_whisker = median; // initialize
+      var lower_whisker = median; // initialize
+      for (var i = 0; i < data.length; i++) {
+        if (data[i] < upper_limit && data[i] > upper_whisker) {
+          upper_whisker = data[i];
+        }
+        if (data[i] > lower_limit && data[i] < lower_whisker) {
+          lower_whisker = data[i];
+        }
+      }
+
+      // Update all text based on div id
+      d3.selectAll('#values').each(function(d) {
+        d3.select(this).text(data_sorted);
+      });
+      d3.selectAll('#outliers').each(function(d) {
+        // Compute outliers and output text
+        var outliers = [];
+        for (var i = 0; i < data.length; i++) {
+          if (data[i] >= upper_limit || data[i] <= lower_limit) {
+            outliers.push(data[i]);
+          }
+        }
+        outliers_sorted = outliers.sort(d3.ascending)
+        d3.select(this).text(outliers_sorted);
+
+        // Then make outliers red and non-outliers black
+        svg.selectAll("circle")
+          .attr("fill", function(d) {
+            if (d >= upper_limit || d <= lower_limit) {
+              return "red"
+            }
+            return "black"
+          });
+      });
+
+      // Update text and handle errors
+      d3.selectAll('#upper_whisker').each(function(d) {
+        if (!Number.isNaN(upper_whisker)) {
+          d3.select(this).text(upper_whisker);
+        } else {
+          d3.select(this).text("");
+        }
+      });
+      d3.selectAll('#Q3').each(function(d) {
+        if (!Number.isNaN(Q3)) {
+          d3.select(this).text(Q3);
+        } else {
+          d3.select(this).text("");
+        }
+      });
+      d3.selectAll('#median').each(function(d) {
+        if (!Number.isNaN(median)) {
+          d3.select(this).text(median);
+        } else {
+          d3.select(this).text("");
+        }
+      });
+      d3.selectAll('#Q1').each(function(d) {
+        if (!Number.isNaN(Q1)) {
+          d3.select(this).text(Q1);
+        } else {
+          d3.select(this).text("");
+        }
+      });
+      d3.selectAll('#lower_whisker').each(function(d) {
+        if (!Number.isNaN(lower_whisker)) {
+          d3.select(this).text(lower_whisker);
+        } else {
+          d3.select(this).text("");
+        }
+      });
+
+      // Create Boxplot
+      // SOURCE: https://www.d3-graph-gallery.com/graph/boxplot_basic.html
+
+      // features for the box
+      var boxCenter = 70
+      var boxWidth = 50
+
+      if (noBoxPlot) {
+        // Step 1. INITIALIZE BOXPLOT
+        noBoxPlot = false;
+        // Show the main vertical line
+        svg.append("line")
+          .attr("transform",
+                `translate (${margin.left},
+                          ${margin.top})`)
+          .attr("id", "boxplot_vert")
+          .attr("x1", boxCenter)
+          .attr("x2", boxCenter)
+          .attr("y1", yScale(lower_whisker))
+          .attr("y2", yScale(upper_whisker))
+          .attr("stroke", "black")
+          .style("z-index", 50)
+          .style("pointer-events", "none")
+
+        // Show the box
+        svg.append("rect")
+          .attr("transform",
+                `translate (${margin.left},
+                          ${margin.top})`)
+          .attr("id", "boxplot_box")
+          .attr("x", boxCenter - boxWidth/2)
+          .attr("y", yScale(Q3))
+          .attr("height", (yScale(Q1)-yScale(Q3)))
+          .attr("width", boxWidth)
+          .attr("stroke", "black")
+          .style("fill", "#33CAFF")
+          .style("z-index", 50)
+          .style("opacity", 0.5)
+          .style("pointer-events", "none")
+
+        // show median, min and max horizontal lines
+        svg.append("line")
+          .attr("transform",
+                `translate (${margin.left},
+                          ${margin.top})`)
+          .attr("id", "boxplot_lower")
+          .attr("x1", boxCenter-boxWidth/2)
+          .attr("x2", boxCenter+boxWidth/2)
+          .attr("y1", yScale(lower_whisker))
+          .attr("y2", yScale(lower_whisker))
+          .attr("stroke", "black")
+          .style("z-index", 50)
+          .style("pointer-events", "none")
+
+        svg.append("line")
+          .attr("transform",
+                `translate (${margin.left},
+                          ${margin.top})`)
+          .attr("id", "boxplot_median")
+          .attr("x1", boxCenter-boxWidth/2)
+          .attr("x2", boxCenter+boxWidth/2)
+          .attr("y1", yScale(median))
+          .attr("y2", yScale(median))
+          .attr("stroke", "black")
+          .style("z-index", 50)
+          .style("pointer-events", "none")
+
+        svg.append("line")
+          .attr("transform",
+                `translate (${margin.left},
+                          ${margin.top})`)
+          .attr("id", "boxplot_upper")
+          .attr("x1", boxCenter-boxWidth/2)
+          .attr("x2", boxCenter+boxWidth/2)
+          .attr("y1", yScale(upper_whisker))
+          .attr("y2", yScale(upper_whisker))
+          .attr("stroke", "black")
+          .style("z-index", 50)
+          .style("pointer-events", "none")
+
+      } else if (!noBoxPlot && (svg.selectAll("circle").data()[0] != undefined)) {
+        // Step 2. TRANSITIONS. Boxplot already initiated AND there is data
+
+        svg.selectAll("#boxplot_vert")
+          .transition()
+          .duration(500)
+          .attr("y1", yScale(lower_whisker))
+          .attr("y2", yScale(upper_whisker));
+
+        svg.selectAll("#boxplot_box")
+          .transition()
+          .duration(500)
+          .attr("y", yScale(Q3))
+          .attr("height", (yScale(Q1)-yScale(Q3)));
+
+        svg.selectAll("#boxplot_lower")
+          .transition()
+          .duration(500)
+          .attr("y1", yScale(lower_whisker))
+          .attr("y2", yScale(lower_whisker));
+
+        svg.selectAll("#boxplot_median")
+          .transition()
+          .duration(500)
+          .attr("y1", yScale(median))
+          .attr("y2", yScale(median));
+
+        svg.selectAll("#boxplot_upper")
+          .transition()
+          .duration(500)
+          .attr("y1", yScale(upper_whisker))
+          .attr("y2", yScale(upper_whisker));
+
+      } else {
+        // Step 3. DELETE. Boxplot already initiated but no more data
+        noBoxPlot = true;
+        // Remove old boxplot
+        d3.selectAll('#boxplot_vert').remove();
+        d3.selectAll('#boxplot_box').remove();
+        d3.selectAll('#boxplot_lower').remove();
+        d3.selectAll('#boxplot_median').remove();
+        d3.selectAll('#boxplot_upper').remove();
+      }
+    }
+		</script>
+
+	</body>
+
+</html>

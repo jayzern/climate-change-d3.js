@@ -1,0 +1,328 @@
+---
+title: "Project"
+output:
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+ # keep this chunk in your .Rmd file
+ knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+```{r, fig.height = 10, fig.width = 10}
+# Cleveland dot plot on renewable energy Faceted by regions
+# on 2017, 2018 and diverging stacked barchart on growth
+library(tidyverse)
+library(readxl)
+
+renewables_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Renewables Generation by source")
+
+# Add continents
+continents <- c(rep("north_america", 3), rep("central_america", 8), rep("europe", 20), rep("CIS", 6), rep("middle_east", 8), rep("africa", 4), rep("asia_pacific", 17))
+
+# Data processing
+renewables_generation_df <- renewables_generation[4:86,] %>%
+  rename(country = `Renewable Energy: Generation by source*`, wind_2017 = `...2`, solar_2017 = `...3`, wind_2018 = `...6`, solar_2018 = `...7`, wind_growth = `...10`, solar_growth = `...11`) %>%
+  filter(!str_detect(country, "Other")) %>%
+  filter(!str_detect(country, "Total")) %>%
+  add_column(continent = continents) %>%
+  mutate_at(c('wind_2017', 'solar_2017', 'wind_2018', 'solar_2018', 'wind_growth', 'solar_growth'), funs(as.numeric)) %>%
+  gather('wind_2018', 'solar_2018', key = "energy_type", value = "generation")
+
+# create a theme for dot plots, which can be reused
+theme_dotplot <- theme_bw(14) +
+    theme(axis.text.y = element_text(size = rel(.75)),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = rel(.75)),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 0.5),
+        panel.grid.minor.x = element_blank())
+
+# Create labels
+right_label <- renewables_generation_df %>%
+        group_by(country) %>%
+        arrange(desc(generation)) %>%
+        top_n(1)
+
+left_label <- renewables_generation_df %>%
+        group_by(country) %>%
+        arrange(desc(generation)) %>%
+        slice(2)
+
+# Plot cleveland
+ggplot(renewables_generation_df, aes(x = generation, y = reorder(country, generation))) +
+    geom_line(aes(group = country)) +
+    geom_point(aes(color = energy_type)) +
+    facet_grid(continent ~ ., scales = "free", space = "free") +
+    geom_text(data = right_label, aes(color = energy_type, label = round(generation, 0)), size = 3, hjust = -.5) +
+    geom_text(data = left_label, aes(color = energy_type, label = round(generation, 0)), size = 3, hjust = 1.5) +
+    labs(title = "Renewable energy generation sources in 2018", subtitle="Source: BP Stats Review") +
+    ylab("") +
+    xlab("Total energy generation") + 
+    xlim(0, 400) +
+    theme_dotplot
+```
+
+```{r}
+# Time series of CO_2
+carbon_dioxide_emissions <- read_excel("data/bp-stats-review-2019-all-data.xlsx", col_names = FALSE, sheet="Carbon Dioxide Emissions")
+
+# Set the column names
+colnames(carbon_dioxide_emissions) <- carbon_dioxide_emissions[3,]
+
+# Data Processing
+carbon_dioxide_emissions_df <- carbon_dioxide_emissions[5:107, 1:55] %>%
+  rename(country = `Million tonnes of carbon dioxide`) %>%
+  drop_na() %>%
+  filter(!str_detect(country, "Other")) %>%
+  filter(!str_detect(country, "Total")) %>%
+  filter(country == "China" | country == "India" | country == "Japan" | country == "Germany" | country == "United Kingdom" | country == "US")
+   # Get China, India, US, Germany, UK, Japan
+
+# Tranpose
+carbon_dioxide_emissions_df <- carbon_dioxide_emissions_df %>% 
+    rownames_to_column %>%
+    gather(variable, value, -rowname) %>% 
+    spread(rowname, value)
+
+# Rename
+colnames(carbon_dioxide_emissions_df) <- tail(carbon_dioxide_emissions_df, 1)
+
+# Delete last row, mutate values, gather
+carbon_dioxide_emissions_df <-carbon_dioxide_emissions_df[-55,] %>%
+  rename(time = country) %>%
+  mutate_at(c('time', 'US', 'Germany', 'United Kingdom', 'China', 'India', 'Japan'), funs(as.numeric)) %>%
+  gather('US', 'Germany', 'United Kingdom', 'China', 'India', 'Japan', key = "country", value = "CO2")
+
+
+# Actually an interesting article
+# https://www.carbonbrief.org/guest-post-chinas-co2-emissions-grew-slower-than-expected-in-2018
+
+
+# Plot TS faceted
+# carbon_dioxide_emissions_df %>%
+#   ggplot(aes(time, CO2, color=country)) +
+#   facet_grid(country ~ ., scales = "free") +
+#   geom_line() + 
+#   theme(legend.position = "none")
+
+# Plot TS of top 6 countries
+carbon_dioxide_emissions_df %>%
+  ggplot(aes(time, CO2, color=country)) +
+  geom_line()
+
+
+# DO SOMETHING LIKE THIS https://www.carbonbrief.org/mapped-worlds-coal-power-plants
+# ANd the slider thingy like this: https://www.visualcapitalist.com/all-the-worlds-coal-power-plants-in-one-map/
+
+# Findings
+# 1) CO2 produced mainly by coal factories
+# 2) Seems like Renewables and Nuclear actually help reduce C02 by relying less on coal
+
+# Plot TS of CHINA but with when they joined the World Trade Organization
+# Super relevant article: https://www.carbonbrief.org/guest-post-chinas-co2-emissions-grew-slower-than-expected-in-2018
+carbon_dioxide_emissions_df %>%
+  filter(country == "China") %>%
+  ggplot(aes(time, CO2, color=country)) +
+    geom_line() + 
+    annotate("rect", xmin=2000.5, xmax=2001.5, ymin=-Inf, ymax=Inf, alpha=0.2, fill="blue") + 
+    annotate("text", x = 2001, y = 8000, label = "China joins WTO") + 
+    annotate("rect", xmin=2013, xmax=2016, ymin=-Inf, ymax=Inf, alpha=0.2, fill="blue") +
+    annotate("text", x = 2013, y =5000, label = "In 2014, \n China expands \n renewable energy/ \n nuclear power; \n causing CO2 to fall \n \n In 2017, \n coal consumption \n grew again ")
+```
+
+```{r}
+# Parallel Coordinate Plots on Primary Energy consumption by fuel
+library(GGally)
+primary_energy_consumption <- read_excel("data/bp-stats-review-2019-all-data.xlsx", col_names = FALSE, sheet="Primary Energy - Cons by fuel")
+
+# Add continents
+continents <- c(rep("north_america", 3), rep("central_america", 8), rep("europe", 20), rep("CIS", 6), rep("middle_east", 8), rep("africa", 4), rep("asia_pacific", 17))
+
+# Data processing
+primary_energy_consumption_df <- primary_energy_consumption[5:87,] %>%
+  rename(country = `...1` , oil = `...9`, natural_gas = `...10`, coal = `...11`, nuclear_energy = `...12`, hydro_electric = `...13`, renewables = `...14`) %>%
+  filter(!str_detect(country, "Other")) %>%
+  filter(!str_detect(country, "Total")) %>%
+  add_column(continent = continents) %>%
+  mutate_at(c('oil', 'natural_gas', 'coal', 'nuclear_energy', 'hydro_electric', 'renewables'), funs(as.numeric)) %>% 
+  select(country, oil, natural_gas, coal, nuclear_energy, hydro_electric, renewables, continent)
+
+# GGally::ggparcoord(primary_energy_consumption_df, columns=9:14, scale="uniminmax", title="PCP")
+# Create an interactive parallel coordinate plot.
+parcoords::parcoords(primary_energy_consumption_df,
+  rownames = FALSE,
+  alpha = 0.5,
+  brushMode = "1D-axes-multi",
+  color = list(colorScale = "scaleOrdinal",
+               colorBy = "continent",
+               colorScheme = "schemeCategory10"),
+  height=600,
+  width=800,
+  withD3 = TRUE)
+```
+
+
+```{r, fig.height = 10, fig.width = 10}
+# Missing data analysis on Carbon Emissions
+process_space_time_data <- function(data, x_start, x_end, y_start, y_end) {
+  # Super useful function to convert Space-Time data into "almost" tidy data
+  # "almost" tidy because countries can still apply gather by key-value
+  # But this is easier for D3
+
+  # Replace columns names
+  colnames(data) <- data[2,]
+  
+  # Filter countries only
+  data_df <- data[y_start:y_end,x_start:x_end] %>%
+    rename(country = colnames(data)[1]) %>%
+    drop_na() %>%
+    filter(!str_detect(country, "Other")) %>%
+    filter(!str_detect(country, "Total"))
+  
+  # Transpose
+  data_df <- data_df %>% 
+    rownames_to_column %>%
+    gather(variable, value, -rowname) %>% 
+    spread(rowname, value)
+  
+  # Rename
+  colnames(data_df) <- tail(data_df, 1) 
+  
+  # Delete last row, rename
+  data_df <- data_df[-x_end,] %>%
+    mutate_at(vars(-country), funs(as.numeric)) %>%
+    rename(year = `country`)
+  
+  return(data_df)
+}
+
+# LOL
+# The USSR dissolved in 1991
+
+# Missing data for carbon
+carbon <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Dioxide Emissions")
+carbon_missing_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
+carbon_missing_df <- carbon_missing_df %>% 
+  gather(-year, key = "country", value = "carbon_emissions") %>%
+  mutate(missing_or_zero = ifelse(is.na(carbon_emissions) | carbon_emissions == 0, "yes", "no"))
+ggplot(carbon_missing_df, aes(x = year, y = fct_reorder(country, -carbon_emissions, sum), fill = missing_or_zero)) +
+  geom_tile(color = "white") +
+  ggtitle("Carbon") +
+  scale_fill_viridis_d() + # discrete scale
+  theme_bw()
+
+# Missing data for solar generation
+solar_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
+solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+solar_generation_df <- solar_generation_df %>% 
+  gather(-year, key = "country", value = "generation") %>%
+  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
+ggplot(solar_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
+  geom_tile(color = "white") +
+  ggtitle("Solar generation") +
+  scale_fill_viridis_d() + # discrete scale
+  theme_bw()
+
+# Missing data for wind generation
+wind_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Wind Generation - TWh ")
+wind_generation_df <- process_space_time_data(wind_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+wind_generation_df <- wind_generation_df %>% 
+  gather(-year, key = "country", value = "generation") %>%
+  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
+ggplot(wind_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
+  geom_tile(color = "white") +
+  ggtitle("Wind generation") +
+  scale_fill_viridis_d() + # discrete scale
+  theme_bw()
+
+# Missing data for biomass generation
+biomass_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Geo Biomass Other - TWh")
+biomass_generation_df <- process_space_time_data(biomass_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+biomass_generation_df <- biomass_generation_df %>% 
+  gather(-year, key = "country", value = "generation") %>%
+  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
+ggplot(biomass_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
+  geom_tile(color = "white") +
+  ggtitle("Biomass generation") +
+  scale_fill_viridis_d() + # discrete scale
+  theme_bw()
+
+# Missing data for biofuel generation
+biofuel_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Biofuels Production - Kboed")
+biofuel_generation_df <- process_space_time_data(biofuel_generation, x_start=1, x_end=30, y_start=4, y_end=43)
+biofuel_generation_df <- biofuel_generation_df %>% 
+  gather(-year, key = "country", value = "generation") %>%
+  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
+ggplot(biofuel_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
+  geom_tile(color = "white") +
+  ggtitle("Biofuel generation") +
+  scale_fill_viridis_d() + # discrete scale
+  theme_bw()
+
+```
+
+
+```{r}
+# DEPRECATED
+
+# Likert style climate change survey draft
+# SOURCE: https://climatecommunication.yale.edu/visualizations-data/ycom-us/
+
+# library(HH) # diverging stacked bar chart
+# ycom <- read_csv("data/YCOM_2019_Data.csv")
+# ycom_metadata <- read_csv("data/YCOM_2019_Metadata.csv")
+# 
+# # BELIEFS
+# happening <- ycom[1,] %>%
+#   dplyr::select('happeningOppose', 'happening') %>%
+#   rename(disagree = happeningOppose, agree = happening) %>%
+#   add_column(question = c('Is climate change even for realz?'), .before = TRUE)
+# 
+# human <- ycom[1,] %>%
+#   dplyr::select( 'humanOppose', 'human') %>%
+#   rename(disagree = humanOppose, agree = human) %>%
+#   add_column(question = c('is it all cuz of humans'), .before = TRUE)
+# 
+# consensus <- ycom[1,] %>%
+#   dplyr::select('consensusOppose', 'consensus') %>%
+#   rename(disagree = consensusOppose, agree = consensus) %>%
+#   add_column(question = c('do scientists agree?'), .before = TRUE)
+# 
+# affectweather <- ycom[1,] %>%
+#   dplyr::select('affectweatherOppose', 'affectweather') %>%
+#   rename(disagree = affectweatherOppose, agree = affectweather) %>%
+#   add_column(question = c('is New York getting colder cuz of clim@te change'), .before = TRUE)
+# 
+# beliefs <- bind_rows(happening, human, consensus, affectweather)
+# 
+# HH::likert(question~., beliefs,
+#            positive.order = TRUE,
+#            main = list("Beliefs"))
+```
+
+```{r}
+# Data Processing for D3 Interactive, Animation part and simple transitions only
+oil <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Elec Gen from Oil")
+gas <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Elec Gen from Gas")
+carbon <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Dioxide Emissions")
+
+# Process data into space-time
+oil_df <- process_space_time_data(oil, x_start=1, x_end=35, y_start=4, y_end=50)
+gas_df <- process_space_time_data(gas, x_start=1, x_end=35, y_start=4, y_end=50)
+carbon_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
+
+# Get intersection of countries
+countries <- intersect(intersect(colnames(oil_df), colnames(gas_df)), colnames(carbon_df))
+oil_df <- oil_df[countries]
+gas_df <- gas_df[countries]
+carbon_df <- carbon_df[countries]
+carbon_df <- carbon_df %>% filter(year >= 1985) # Get 1985 onwards only
+
+# Concatenate
+data <- data.frame(oil_df, gas_df, carbon_df)
+
+# Write
+#write.csv(data,'data_many_countries.csv', row.names = TRUE)
+```

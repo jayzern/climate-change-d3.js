@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Climate Change: Renewable Energy</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <style>
+    </style>
+  </head>
+
+	<body>
+    Chart:
+		<div id="chart">
+      <svg width="800" height="800">
+      </svg>
+    </div>
+
+		<script type="text/javascript">
+      // SVG and dimensions
+      var svg = d3.select("svg"),
+        width = +svg.attr("width"),
+        height = +svg.attr("height");
+
+      // Set margins and layout
+      var margin = {top: 50, right: 50, bottom: 50, left: 50};
+      var innerWidth = width - margin.left - margin.right;
+      var innerHeight = height - margin.top - margin.bottom;
+
+      // Set scales and axes
+      var yScale = d3.scaleSqrt() // scaleLinear
+        .domain([1600,0])
+        .range([0,innerHeight]);
+      var yAxis = d3.axisLeft()
+        .scale(yScale)
+        .ticks(10);
+      var xScale = d3.scaleSqrt()
+        .domain([0,300])
+        .range([0,innerHeight]);
+      var xAxis = d3.axisBottom()
+        .scale(xScale)
+        .ticks(10);
+      var rScale = d3.scaleLinear()
+        .domain([0, 6000])
+        .range([1, 20]);
+      svg.append("g")
+        .attr("transform",
+              `translate (${margin.left},
+                        ${margin.top})`)
+        .call(yAxis);
+      svg.append("g")
+        .attr("transform",
+              `translate (${margin.left},
+                        ${margin.top + innerHeight})`)
+        .call(xAxis);
+
+      svg.append("text")
+        .attr("class", "x label")
+        .attr("text-anchor", "end")
+        .attr("x", width)
+        .attr("y", height - 6)
+        .text("x-axis: Oil, y-axis: Gas, z-axis: Carbon Emissions");
+
+
+      // Import CSV files
+      // HACK: go to current working directory
+      // Run:
+      //    python -m http.server 8888
+      // Only works for Mozilla Firefox Browser
+      //d3.csv("http://localhost:8888/data/data_US.csv").then(function(data) {
+      d3.csv("http://localhost:8888/data/data_many_countries.csv").then(function(data) {
+
+        countries = ["Canada", "Spain", "Turkey", "Ukraine", "United Kingdom",
+          "Kazakhstan", "Russian Federation", "Iran", "Saudi Arabia",
+          "United Arab Emirates", "Egypt", "Mexico", "South Africa", "Australia",
+          "China", "India", "Indonesia", "Japan", "Malaysia", "South Korea",
+          "Taiwan", "Thailand", "US", "Vietnam", "Argentina", "Brazil", "Germany",
+          "Italy", "Netherlands", "Poland"]
+
+        // MANY circles, initialize
+        for (var i = 0; i < countries.length; i++) {
+          oil = data[0][countries[i]]
+          gas = data[0][countries[i] + ".1"]
+          carbon = data[0][countries[i] + ".2"]
+
+          svg.append("circle")
+            .attr("id", countries[i])
+            .attr("transform",
+                  `translate (${margin.left},
+                            ${margin.top})`)
+            .attr("cx", xScale(oil))
+            .attr("cy", yScale(gas))
+            .attr("r", rScale(carbon))
+            .style("stroke", "#000")
+            .style("fill", "red");
+        }
+
+        // MANY circles, Sequential Transition
+        var counter = 0;
+        loop();
+        function loop() {
+          if (data[counter + 1]) {
+            d3.timeout(loop, 500)
+          }
+          // Update  all countries
+          for (var i = 0; i < countries.length; i++) {
+            oil = data[counter][countries[i]]
+            gas = data[counter][countries[i] + ".1"]
+            carbon = data[counter][countries[i] + ".2"]
+
+            svg.selectAll("#" + countries[i])
+              .transition()
+              .duration(500)
+              .attr("cx", xScale(oil))
+              .attr("cy", yScale(gas))
+              .attr("r", rScale(carbon))
+          }
+          counter++
+        }
+
+        // ONE circle, Initialize Circle
+        // svg.append("circle")
+        //   .attr("transform",
+        //         `translate (${margin.left},
+        //                   ${margin.top})`)
+        //   .attr("cx", xScale(data[0].oil))
+        //   .attr("cy", yScale(data[0].gas))
+        //   .attr("r", rScale(data[0].carbon))
+        //   .style("stroke", "#000")
+        //   .style("fill", "red");
+
+        // ONE circle, Sequential Transition
+        // Source: https://stackoverflow.com/questions/45258853/how-to-do-animation-of-sequential-data-with-d3-js
+        // var counter = 0;
+        // loop();
+        // function loop() {
+        //   if (data[counter + 1]) {
+        //     d3.timeout(loop, 500)
+        //   }
+        //   svg.selectAll("circle")
+        //     .transition()
+        //     .duration(500)
+        //     .attr("cx", xScale(data[counter].oil))
+        //     .attr("cy", yScale(data[counter].gas))
+        //     .attr("r", rScale(data[counter].carbon))
+        //   counter++
+        // }
+      });
+
+		</script>
+
+	</body>
+
+</html>

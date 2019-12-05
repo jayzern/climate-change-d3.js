@@ -329,7 +329,7 @@ data <- data.frame(oil_df, gas_df, carbon_df)
 ```
 
 ```{r}
-# Data Processing for D3 World Map Interactive Component
+# Data Processing for D3 Renewables vs Emissions
 carbon <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Dioxide Emissions")
 carbon_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
 carbon_df <- tail(carbon_df, 1)
@@ -349,4 +349,12 @@ renewable_df <- renewable_df %>%
 temp <- data.frame(carbon_df, renewable_df) %>% select(c('country', emissions, renewables))
 
 write.csv(temp,'temp.csv', row.names = TRUE)
+```
+
+```{r}
+# Data Processing for Solar Generation
+solar_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
+solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+
+write.csv(solar_generation_df,'solar_generation.csv', row.names = TRUE)
 ```

@@ -36,7 +36,8 @@
                 const yScale = d3
                   .scaleLinear()
                   .range([height, 0])
-                  .domain([0, d3.max(data, dataPoint => dataPoint.Value)]);
+                  .domain([d3.min(data, dataPoint => +dataPoint.Value), d3.max(data, dataPoint => +dataPoint.Value)]);
+
                 const xScale = d3
                   .scaleLinear()
                   .range([0, width])
@@ -78,7 +79,7 @@
                 chart
                   .append("g")
                   .attr("transform", `translate(0,${height})`)
-                  .call(d3.axisBottom(xScale).ticks(data.length));
+                  .call(d3.axisBottom(xScale).ticks(10,'d'));
                 // Add the Y Axis
                 chart
                   .append("g")

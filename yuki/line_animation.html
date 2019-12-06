@@ -83,7 +83,7 @@
               .attr("stroke", "steelblue")
               .attr("stroke-linejoin", "round")
               .attr("stroke-linecap", "round")
-              .attr("stroke-width", 1.5)
+              .attr("stroke-width", 4.0)
               .attr("d", line);
             
             const pathLength = path.node().getTotalLength();
@@ -98,6 +98,7 @@
               .attr("stroke-dashoffset", pathLength)
               .attr("stroke-dasharray", pathLength)
               .transition(transitionPath)
+              .attr("stroke", "darkred")
               .attr("stroke-dashoffset", 0);
             
             // Add the X Axis

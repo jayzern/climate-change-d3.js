@@ -65,8 +65,8 @@
                 // https://github.com/d3/d3-transition
                 const transitionPath = d3
                   .transition()
-                  .ease(d3.easeSin)
-                  .duration(2500);
+                  .ease(d3.easeExp)
+                  .duration(4000);
                 
                 path
                   .attr("stroke-dashoffset", pathLength)

@@ -24,8 +24,8 @@
                   .append("svg")
                   .attr("height", 300)
                   .attr("width", 600);
-                const margin = { top: 0, bottom: 20, left: 30, right: 20 };
-                const chart = svg.append("g").attr("transform", `translate(${margin.left},0)`);
+                const margin = { top: 0, bottom: 50, left: 30, right: 20 };
+                const chart = svg.append("g").attr("transform", `translate(${margin.left},10)`);
                 const width = +svg.attr("width") - margin.left - margin.right;
                 const height = +svg.attr("height") - margin.top - margin.bottom;
                 const grp = chart
@@ -80,12 +80,30 @@
                   .append("g")
                   .attr("transform", `translate(0,${height})`)
                   .call(d3.axisBottom(xScale).ticks(10,'d'));
+    
+                // Label for X Axis
+                svg.append("text").attr("transform",
+                    "translate(" + (width/2) + " ," + 
+                           (height + margin.top + 50) + ")")
+                    .style("text-anchor", "middle")
+                    .text("Year");
+
                 // Add the Y Axis
                 chart
                   .append("g")
                   .attr("transform", `translate(0, 0)`)
                   .call(d3.axisLeft(yScale));
                     });
+
+                // Label for Y Axis
+                svg.append("text")
+                    .attr('id', 'bob')
+                    .attr("transform", "rotate(-90)")
+                    .attr("x",0-margin.left)
+                    .attr("y",0-height / 2)
+                    .attr("dy", "1em")
+                    .style("text-anchor", "middle")
+                    .text("Annual Anomaly Value of Global Temperature");
         </script>
 	</body>
 </html>

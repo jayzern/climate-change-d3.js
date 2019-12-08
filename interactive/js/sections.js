@@ -58,12 +58,8 @@ var scrollVis = function () {
       g = svg.select('g')
         .attr('transform', 'translate(' + margin.left + ',' + margin.top + ')');
 
-      // Jay: Process ur data here
-      var data = null
-      console.log(rawData)
-      // data = process(rawData)
-
-      setupVis(data);
+      // Jay: Process ur data here if you want
+      setupVis(rawData);
 
       setupSections();
     });
@@ -73,16 +69,64 @@ var scrollVis = function () {
   /**
    * setupVis - creates initial elements for all
    * sections of the visualization.
-   *
-   * @param wordData - data object for each word.
-   * @param fillerCounts - nested data that includes
-   *  element for each filler word type.
-   * @param histData - binned histogram data
    */
   var setupVis = function (data) {
     // JAY: add graphs here, set opacity to 0
-    g.append("rect")
+
+    // Projection
+    var map2dProjection = d3.geoNaturalEarth2()
+        .scale(width / 1.3 / Math.PI)
+        .translate([width / 2, height / 2])
+    var rScaleMap2dSolar = d3.scaleLinear()
+      .domain([0, d3.max(data["solar_generation"], d => +d.generation)])
+      .range([1, 50]);
+
+    // Draw 2D map
+    g.append("g")
       .attr('class', 'blue-rect')
+      .selectAll("path")
+      .data(data["map2D"].features)
+      .enter().append("path")
+        .attr("fill", "white")
+        .attr("d", d3.geoPath()
+            .projection(map2dProjection)
+        )
+        .style("stroke", "#000")
+
+    // Draw Circles
+    g.append("g")
+      .attr('class', 'blue-rect')
+      .selectAll("circle")
+      .data(data["solar_generation"])
+      .enter().append("circle")
+        .attr('fill-opacity', 0.5)
+        .attr("r", function(d) {
+          if (d.year == "2018") {
+            try {
+              return rScaleMap2dSolar(d.generation)
+            } catch {
+              // Do something
+            }
+          }
+        })
+        .attr("transform", function(d) {
+          if (d.year == "2018") {
+            try {
+              return "translate(" + map2dProjection([
+                +data["geoDict"][d["country"]].LON,
+                +data["geoDict"][d["country"]].LAT
+              ]) + ")";
+            } catch(err) {
+              // Do something
+            }
+          }
+        })
+        .style("stroke", "#000")
+        .style("fill", "green");
+
+
+    g.append("rect")
+      .attr('class', 'blue-rect2')
       .attr("x", "0")
       .attr("y", "0")
       .attr("width", "300")
@@ -109,6 +153,7 @@ var scrollVis = function () {
       .attr('opacity', 0);
   };
 
+
   /**
    * setupSections - each section is activated
    * by a separate function. Here we associate
@@ -130,7 +175,9 @@ var scrollVis = function () {
     // for all scrolling and so are set to
     // no-op functions.
     for (var i = 0; i < 3; i++) {
-      updateFunctions[i] = function () {};
+      updateFunctions[i] = function () {
+
+      };
     }
   };
 
@@ -291,4 +338,30 @@ function display(data) {
 }
 
 // load data and display
-d3.csv('data/solar_generation.csv', display);
+// d3.csv('http://localhost:8888/data/solar_generation.csv', display);
+
+d3.queue()
+.defer(d3.json, "https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson")
+.defer(d3.csv, 'http://localhost:8888/data/geocoding.csv')
+.defer(d3.csv, 'http://localhost:8888/data/solar_generation.csv')
+.defer(d3.csv, 'http://localhost:8888/data/renewables_vs_emissions.csv')
+.await(function(error, map2D, geocoding, solar_generation, file2) {
+    if (error) {
+      console.error('Oh dear, something went wrong: ' + error);
+    } else {
+      var data = {}
+      var geoDict = {}
+      // HACK: Turn geocoding into a hashmap
+      for (i = 0; i < geocoding.length; i++) {
+        geoDict[geocoding[i].country] = {
+          "LON": geocoding[i].LON,
+          "LAT": geocoding[i].LAT
+        }
+      }
+      data["map2D"] = map2D
+      data["geoDict"] = geoDict
+      data["solar_generation"] = solar_generation
+      data["renewables_vs_emissions"] = file2
+      display(data)
+    }
+});

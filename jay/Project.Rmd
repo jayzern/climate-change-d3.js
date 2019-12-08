@@ -356,5 +356,19 @@ write.csv(temp,'temp.csv', row.names = TRUE)
 solar_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
 solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
 
+# Tidy data
+solar_generation_df <- solar_generation_df %>% 
+  gather(key = "country", value = "generation", -year)
+
+
+# Take 
 write.csv(solar_generation_df,'solar_generation.csv', row.names = TRUE)
+```
+
+```{r}
+wind_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Wind Generation - TWh ")
+wind_generation_df <- process_space_time_data(wind_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+
+
+wind_generation_df
 ```

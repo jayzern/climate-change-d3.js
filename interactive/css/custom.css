@@ -2,6 +2,13 @@ body {
     /* background: linear-gradient(to bottom, #202020, #111119) !important; */
 }
 
+.tooltip {
+    position: absolute;
+    width: 200px;
+    height: 28px;
+    pointer-events: none;
+}
+
 /*********** START RAIN ANIMATION ************/
 .rain {
     position: absolute;

@@ -4,6 +4,9 @@
  * using reusable charts pattern:
  * http://bost.ocks.org/mike/chart/
  */
+
+import { plot_top_countries } from './top_countries.js';
+
 var scrollVis = function() {
     // constants to define the size
     // and margins of the vis area.
@@ -72,6 +75,7 @@ var scrollVis = function() {
         });
     };
 
+    var show_top_countries;
     /**
      * setupVis - creates initial elements for all
      * sections of the visualization.
@@ -109,6 +113,8 @@ var scrollVis = function() {
             .attr('height', '300')
             .attr('fill', 'green')
             .attr('opacity', 0);
+
+        plot_top_countries();
     };
 
     /**
@@ -124,6 +130,7 @@ var scrollVis = function() {
         activateFunctions[0] = showBlueRect;
         activateFunctions[1] = showRedRect;
         activateFunctions[2] = showGreenRect;
+        activateFunctions[3] = showTopCountries;
 
         // updateFunctions are called while
         // in a particular section to update
@@ -131,7 +138,7 @@ var scrollVis = function() {
         // Most sections do not need to be updated
         // for all scrolling and so are set to
         // no-op functions.
-        for (var i = 0; i < 3; i++) {
+        for (var i = 0; i < 4; i++) {
             updateFunctions[i] = function() {};
         }
     };
@@ -196,6 +203,32 @@ var scrollVis = function() {
             .transition()
             .duration(600)
             .attr('opacity', 1);
+
+        d3.select('#top_countries_ratio')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+
+        d3.selectAll('.dot').style('opacity', 0);
+    }
+
+    function showTopCountries() {
+        g.selectAll('.green-rect')
+            .transition()
+            .duration(600)
+            .attr('opacity', 0);
+
+        d3.select('#top_countries_ratio')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        d3.selectAll('.dot')
+            .transition()
+            .delay(function(d, i) {
+                return (100 - i) * 10;
+            })
+            .style('opacity', 0.8);
     }
 
     /**

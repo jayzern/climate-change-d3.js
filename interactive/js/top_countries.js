@@ -71,8 +71,8 @@ export function plot_top_countries(data) {
     // Tooltip
     var tooltip = d3
         .select('#top_countries_ratio')
-        .append('div')
-        .attr('class', 'tooltip')
+        .append('text')
+        .attr('class', 'tooltipasdf')
         .style('opacity', 0);
 
     var color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -96,7 +96,7 @@ export function plot_top_countries(data) {
             return color(i);
         })
         .on('mouseover', function(d, i) {
-            console.log('mouse over detected');
+            console.log(d3.event.pageX);
 
             // why doesn't this work?
             tooltip
@@ -104,15 +104,17 @@ export function plot_top_countries(data) {
                 .duration(200)
                 .style('opacity', 0.9);
             tooltip
-                .html(
+                .text(
                     countries[i] +
-                        '<br/> Rank: ' +
+                        '; Rank: ' +
                         (i + 1) +
-                        '<br/> Renewable Ratio: ' +
-                        d.toFixed(2)
+                        '; Renewable Percent: ' +
+                        (d * 100).toFixed(2) +
+                        '%'
                 )
-                .style('left', d3.event.pageX + 20 + 'px')
-                .style('top', d3.event.pageY + 40 + 'px');
+                .attr('x', 50)
+                .attr('y', 10)
+                .style('fill', 'black');
         })
         .on('mouseout', function(d) {
             tooltip

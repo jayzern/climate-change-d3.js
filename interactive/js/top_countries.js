@@ -118,6 +118,7 @@ export function plot_top_countries(data) {
                 .duration(500)
                 .style('opacity', 0);
         });
+
     return function() {
         d3.selectAll('.dot')
             .transition()

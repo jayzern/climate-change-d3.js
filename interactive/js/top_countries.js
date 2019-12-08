@@ -97,6 +97,8 @@ export function plot_top_countries(data) {
         })
         .on('mouseover', function(d, i) {
             console.log('mouse over detected');
+
+            // why doesn't this work?
             tooltip
                 .transition()
                 .duration(200)

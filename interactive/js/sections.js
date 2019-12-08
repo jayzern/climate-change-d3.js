@@ -44,7 +44,7 @@ var scrollVis = function() {
      *  example, we will be drawing it in #vis
      */
     var chart = function(selection) {
-        selection.each(function(rawData) {
+        selection.each(function(data) {
             var svg = d3.select(this).append('svg');
 
             svg.attr('width', width + margin.left + margin.right);
@@ -60,11 +60,6 @@ var scrollVis = function() {
                     'transform',
                     'translate(' + margin.left + ',' + margin.top + ')'
                 );
-
-            // Jay: Process ur data here
-            var data = null;
-            console.log(rawData);
-            // data = process(rawData)
 
             setupVis(data);
 
@@ -86,8 +81,9 @@ var scrollVis = function() {
 
       // Projection
       var map2dProjection = d3.geoNaturalEarth2()
-          .scale(width / 1.3 / Math.PI)
-          .translate([width / 2, height / 2])
+        .scale(width / 1.3 / Math.PI)
+        .translate([width / 2, height / 2])
+
       var rScaleMap2dSolar = d3.scaleLinear()
         .domain([0, d3.max(data["solar_generation"], d => +d.generation)])
         .range([1, 50]);
@@ -133,7 +129,7 @@ var scrollVis = function() {
             }
           })
           .style("stroke", "#000")
-          .style("fill", "green");
+          .style("fill", "blue");
 
 
       g.append("rect")

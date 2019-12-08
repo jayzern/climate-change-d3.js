@@ -47,7 +47,7 @@ var scrollVis = function() {
      *  example, we will be drawing it in #vis
      */
     var chart = function(selection) {
-        selection.each(function(rawData) {
+        selection.each(function(data) {
             var svg = d3.select(this).append('svg');
 
             svg.attr('width', width + margin.left + margin.right);
@@ -63,11 +63,6 @@ var scrollVis = function() {
                     'transform',
                     'translate(' + margin.left + ',' + margin.top + ')'
                 );
-
-            // Jay: Process ur data here
-            var data = null;
-            console.log(rawData);
-            // data = process(rawData)
 
             setupVis(data);
 
@@ -87,8 +82,67 @@ var scrollVis = function() {
      */
     var setupVis = function(data) {
         // JAY: add graphs here, set opacity to 0
-        g.append('rect')
+
+        // Projection
+        var map2dProjection = d3
+            .geoNaturalEarth2()
+            .scale(width / 1.3 / Math.PI)
+            .translate([width / 2, height / 2]);
+
+        var rScaleMap2dSolar = d3
+            .scaleLinear()
+            .domain([0, d3.max(data['solar_generation'], d => +d.generation)])
+            .range([1, 50]);
+
+        // Draw 2D map
+        g.append('g')
             .attr('class', 'blue-rect')
+            .selectAll('path')
+            .data(data['map2D'].features)
+            .enter()
+            .append('path')
+            .attr('fill', 'white')
+            .attr('d', d3.geoPath().projection(map2dProjection))
+            .style('stroke', '#000');
+
+        // Draw Circles
+        g.append('g')
+            .attr('class', 'blue-rect')
+            .selectAll('circle')
+            .data(data['solar_generation'])
+            .enter()
+            .append('circle')
+            .attr('fill-opacity', 0.5)
+            .attr('r', function(d) {
+                if (d.year == '2018') {
+                    try {
+                        return rScaleMap2dSolar(d.generation);
+                    } catch {
+                        // Do something
+                    }
+                }
+            })
+            .attr('transform', function(d) {
+                if (d.year == '2018') {
+                    try {
+                        return (
+                            'translate(' +
+                            map2dProjection([
+                                +data['geoDict'][d['country']].LON,
+                                +data['geoDict'][d['country']].LAT
+                            ]) +
+                            ')'
+                        );
+                    } catch (err) {
+                        // Do something
+                    }
+                }
+            })
+            .style('stroke', '#000')
+            .style('fill', 'blue');
+
+        g.append('rect')
+            .attr('class', 'blue-rect2')
             .attr('x', '0')
             .attr('y', '0')
             .attr('width', '300')
@@ -114,7 +168,8 @@ var scrollVis = function() {
             .attr('fill', 'green')
             .attr('opacity', 0);
 
-        plot_top_countries();
+        // Top Countries Plot
+        show_top_countries = plot_top_countries(data['top_countries_ratios']);
     };
 
     /**
@@ -223,12 +278,7 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 1);
 
-        d3.selectAll('.dot')
-            .transition()
-            .delay(function(d, i) {
-                return (100 - i) * 10;
-            })
-            .style('opacity', 0.8);
+        show_top_countries();
     }
 
     /**
@@ -329,4 +379,42 @@ function display(data) {
 }
 
 // load data and display
-d3.csv('data/solar_generation.csv', display);
+// d3.csv('http://localhost:8888/data/solar_generation.csv', display);
+
+d3.queue()
+    .defer(
+        d3.json,
+        'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson'
+    )
+    .defer(d3.csv, 'http://localhost:8888/data/geocoding.csv')
+    .defer(d3.csv, 'http://localhost:8888/data/solar_generation.csv')
+    .defer(d3.csv, 'http://localhost:8888/data/renewables_vs_emissions.csv')
+    .defer(d3.csv, 'data/top_countries_ratio.csv')
+    .await(function(
+        error,
+        map2D,
+        geocoding,
+        solar_generation,
+        file2,
+        top_countries_ratios
+    ) {
+        if (error) {
+            console.error('Oh dear, something went wrong: ' + error);
+        } else {
+            var data = {};
+            var geoDict = {};
+            // HACK: Turn geocoding into a hashmap
+            for (var i = 0; i < geocoding.length; i++) {
+                geoDict[geocoding[i].country] = {
+                    LON: geocoding[i].LON,
+                    LAT: geocoding[i].LAT
+                };
+            }
+            data['map2D'] = map2D;
+            data['geoDict'] = geoDict;
+            data['solar_generation'] = solar_generation;
+            data['renewables_vs_emissions'] = file2;
+            data['top_countries_ratios'] = top_countries_ratios;
+            display(data);
+        }
+    });

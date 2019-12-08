@@ -264,7 +264,9 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 0);
 
-        d3.selectAll('.dot').style('opacity', 0);
+        d3.selectAll('.dot')
+            .attr('cy', 0)
+            .style('opacity', 0);
     }
 
     function showTopCountries() {

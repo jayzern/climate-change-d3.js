@@ -69,10 +69,16 @@ export function plot_top_countries(data) {
         .text('Renewable Energy Generation / Total Energy Consumed');
 
     // Tooltip
+    // var tooltip = d3
+    //     .select('#top_countries_ratio')
+    //     .append('text')
+    //     .attr('class', 'tooltipscatter')
+    //     .style('opacity', 0);
+
     var tooltip = d3
-        .select('#top_countries_ratio')
-        .append('text')
-        .attr('class', 'tooltipasdf')
+        .select('#vis')
+        .append('div')
+        .attr('class', 'tooltipscatter')
         .style('opacity', 0);
 
     var color = d3.scaleOrdinal(d3.schemeCategory10);
@@ -96,25 +102,22 @@ export function plot_top_countries(data) {
             return color(i);
         })
         .on('mouseover', function(d, i) {
-            console.log(d3.event.pageX);
-
-            // why doesn't this work?
             tooltip
                 .transition()
                 .duration(200)
                 .style('opacity', 0.9);
             tooltip
-                .text(
+                .html(
                     countries[i] +
-                        '; Rank: ' +
+                        '<br/> Rank: ' +
                         (i + 1) +
-                        '; Renewable Percent: ' +
-                        (d * 100).toFixed(2) +
+                        '<br/> Renewable Percent: ' +
+                        (d * 100).toFixed(1) +
                         '%'
                 )
-                .attr('x', 50)
-                .attr('y', 10)
-                .style('fill', 'black');
+                .style('top', yScale(d) + 'px')
+                .style('left', xScale(i + 1) + 'px')
+                .style('display', 'block');
         })
         .on('mouseout', function(d) {
             tooltip

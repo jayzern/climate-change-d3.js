@@ -6,6 +6,7 @@
  */
 
 import { plot_top_countries } from './top_countries.js';
+import { plot_map_2d } from './map_2d.js';
 
 var scrollVis = function() {
     // constants to define the size
@@ -71,85 +72,13 @@ var scrollVis = function() {
     };
 
     var show_top_countries;
+    var show_map_2d;
     /**
      * setupVis - creates initial elements for all
      * sections of the visualization.
-     *
-     * @param wordData - data object for each word.
-     * @param fillerCounts - nested data that includes
-     *  element for each filler word type.
-     * @param histData - binned histogram data
      */
     var setupVis = function(data) {
-        // JAY: add graphs here, set opacity to 0
-
-        // Projection
-        var map2dProjection = d3
-            .geoNaturalEarth2()
-            .scale(width / 1.3 / Math.PI)
-            .translate([width / 2, height / 2]);
-
-        var rScaleMap2dSolar = d3
-            .scaleLinear()
-            .domain([0, d3.max(data['solar_generation'], d => +d.generation)])
-            .range([1, 50]);
-
-        // Draw 2D map
-        g.append('g')
-            .attr('class', 'blue-rect')
-            .selectAll('path')
-            .data(data['map2D'].features)
-            .enter()
-            .append('path')
-            .attr('fill', 'white')
-            .attr('d', d3.geoPath().projection(map2dProjection))
-            .style('stroke', '#000');
-
-        // Draw Circles
-        g.append('g')
-            .attr('class', 'blue-rect')
-            .selectAll('circle')
-            .data(data['solar_generation'])
-            .enter()
-            .append('circle')
-            .attr('fill-opacity', 0.5)
-            .attr('r', function(d) {
-                if (d.year == '2018') {
-                    try {
-                        return rScaleMap2dSolar(d.generation);
-                    } catch {
-                        // Do something
-                    }
-                }
-            })
-            .attr('transform', function(d) {
-                if (d.year == '2018') {
-                    try {
-                        return (
-                            'translate(' +
-                            map2dProjection([
-                                +data['geoDict'][d['country']].LON,
-                                +data['geoDict'][d['country']].LAT
-                            ]) +
-                            ')'
-                        );
-                    } catch (err) {
-                        // Do something
-                    }
-                }
-            })
-            .style('stroke', '#000')
-            .style('fill', 'blue');
-
-        g.append('rect')
-            .attr('class', 'blue-rect2')
-            .attr('x', '0')
-            .attr('y', '0')
-            .attr('width', '300')
-            .attr('height', '300')
-            .attr('fill', 'lightblue')
-            .attr('opacity', 0);
-
+        // JAY: add graphs here
         g.append('rect')
             .attr('class', 'red-rect')
             .attr('x', '0')
@@ -168,8 +97,12 @@ var scrollVis = function() {
             .attr('fill', 'green')
             .attr('opacity', 0);
 
+        // Show Map 2d for renewables and emissions
+        show_map_2d = plot_map_2d(data, g);
+
         // Top Countries Plot
         show_top_countries = plot_top_countries(data['top_countries_ratios']);
+
     };
 
     /**
@@ -182,7 +115,7 @@ var scrollVis = function() {
     var setupSections = function() {
         // activateFunctions are called each
         // time the active section changes
-        activateFunctions[0] = showBlueRect;
+        activateFunctions[0] = showMap2d;
         activateFunctions[1] = showRedRect;
         activateFunctions[2] = showGreenRect;
         activateFunctions[3] = showTopCountries;
@@ -212,9 +145,9 @@ var scrollVis = function() {
      * user may be scrolling up or down).
      *
      */
-    function showBlueRect() {
+    function showMap2d() {
         // Set first graph to be visible
-        g.selectAll('.blue-rect')
+        g.selectAll('.map-2d')
             .transition()
             .duration(600)
             .attr('opacity', 1);
@@ -228,7 +161,7 @@ var scrollVis = function() {
 
     function showRedRect() {
         // Set previous graph to be invisible
-        g.selectAll('.blue-rect')
+        g.selectAll('.map-2d')
             .transition()
             .duration(600)
             .attr('opacity', 0);

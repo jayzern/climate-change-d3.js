@@ -63,66 +63,64 @@ export function plot_map_2d(data, g) {
         .style('stroke', '#000')
         .style('fill', 'blue');
 
+    // Slider
+    var dataTime = d3.range(0, 10).map(function(d) {
+        return new Date(2009 + d, 10, 3);
+    });
 
-        // Slider
-        var dataTime = d3.range(0, 10).map(function(d) {
-            return new Date(2009 + d, 10, 3);
+    var sliderTime = d3
+        .sliderBottom()
+        .min(d3.min(dataTime))
+        .max(d3.max(dataTime))
+        .step(1000 * 60 * 60 * 24 * 365)
+        .width(580)
+        .tickFormat(d3.timeFormat('%Y'))
+        .tickValues(dataTime)
+        .default(new Date(2018, 10, 3))
+        .on('onchange', val => {
+            var newYear = d3.timeFormat('%Y')(val);
+
+            // If new year then transition
+            if (newYear != mapYear) {
+                //console.log("Years match, do something")
+                g.selectAll('.map-2d circle')
+                    //.transition()
+                    //.duration(2000)
+                    .attr('r', function(d) {
+                        if (d.year == newYear) {
+                            try {
+                                return rScaleMap2dSolar(d.generation);
+                            } catch {
+                                // Do something
+                            }
+                        }
+                    })
+                    .attr('transform', function(d) {
+                        if (d.year == newYear) {
+                            try {
+                                return (
+                                    'translate(' +
+                                    map2dProjection([
+                                        +data['geoDict'][d['country']].LON,
+                                        +data['geoDict'][d['country']].LAT
+                                    ]) +
+                                    ')'
+                                );
+                            } catch (err) {
+                                // Do something
+                            }
+                        }
+                    });
+
+                // Then update the current Year
+                mapYear = newYear;
+            }
         });
 
-        var sliderTime = d3
-            .sliderBottom()
-            .min(d3.min(dataTime))
-            .max(d3.max(dataTime))
-            .step(1000 * 60 * 60 * 24 * 365)
-            .width(580)
-            .tickFormat(d3.timeFormat('%Y'))
-            .tickValues(dataTime)
-            .default(new Date(2018, 10, 3))
-            .on('onchange', val => {
-                var newYear = d3.timeFormat('%Y')(val);
+    var gTime = g
+        .append('g')
+        .attr('class', 'map-2d')
+        .attr('transform', 'translate(15,500)');
 
-                // If new year then transition
-                if (newYear != mapYear) {
-
-                    //console.log("Years match, do something")
-                    g.selectAll('circle')
-                        //.transition()
-                        //.duration(2000)
-                        .attr('r', function(d) {
-                            if (d.year == newYear) {
-                                try {
-                                    return rScaleMap2dSolar(d.generation);
-                                } catch {
-                                    // Do something
-                                }
-                            }
-                        })
-                        .attr('transform', function(d) {
-                            if (d.year == newYear) {
-                                try {
-                                    return (
-                                        'translate(' +
-                                        map2dProjection([
-                                            +data['geoDict'][d['country']].LON,
-                                            +data['geoDict'][d['country']].LAT
-                                        ]) +
-                                        ')'
-                                    );
-                                } catch (err) {
-                                    // Do something
-                                }
-                            }
-                        });
-
-                    // Then update the current Year
-                    mapYear = newYear;
-                }
-            });
-
-        var gTime = g
-            .append('g')
-            .attr('class', 'map-2d')
-            .attr('transform', 'translate(15,500)');
-
-        gTime.call(sliderTime);
+    gTime.call(sliderTime);
 }

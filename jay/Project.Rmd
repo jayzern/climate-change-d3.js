@@ -352,6 +352,19 @@ write.csv(temp,'temp.csv', row.names = TRUE)
 ```
 
 ```{r}
+# Data Processing for Emissions
+carbon <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Dioxide Emissions")
+carbon_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
+
+# Tidy data
+carbon_df <- carbon_df %>%
+  gather(key = "country", value = "generation", -year)
+
+# Write to CSV
+write.csv(carbon_df,'carbon_generation.csv', row.names = TRUE)
+```
+
+```{r}
 # Data Processing for Solar Generation
 solar_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
 solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
@@ -360,15 +373,72 @@ solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_en
 solar_generation_df <- solar_generation_df %>% 
   gather(key = "country", value = "generation", -year)
 
-
-# Take 
+# Write to CSV 
 write.csv(solar_generation_df,'solar_generation.csv', row.names = TRUE)
 ```
 
 ```{r}
+# Data Processing for Wind Generation
 wind_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Wind Generation - TWh ")
 wind_generation_df <- process_space_time_data(wind_generation, x_start=1, x_end=55, y_start=4, y_end=108)
 
+# Tidy data
+wind_generation_df <- wind_generation_df %>% 
+  gather(key = "country", value = "generation", -year)
 
-wind_generation_df
+# Write to CSV
+write.csv(wind_generation_df,'wind_generation.csv', row.names = TRUE)
+```
+
+```{r}
+# Data Processing for Biomass
+biomass_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Geo Biomass Other - TWh")
+biomass_generation_df <- process_space_time_data(biomass_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+
+# Tidy data
+biomass_generation_df <- biomass_generation_df %>%
+  gather(key = "country", value = "generation", -year)
+
+# Write to CSV 
+write.csv(biomass_generation_df,'biomass_generation.csv', row.names = TRUE)
+```
+
+```{r}
+# Data Processing for Biofuel
+biofuel_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Biofuels Production - Kboed")
+biofuel_generation_df <- process_space_time_data(biofuel_generation, x_start=1, x_end=30, y_start=4, y_end=43)
+
+# Tidy data
+biofuel_generation_df <- biofuel_generation_df %>%
+  gather(key = "country", value = "generation", -year)
+
+# Write to CSV 
+write.csv(biofuel_generation_df,'biofuel_generation.csv', row.names = TRUE)
+```
+
+```{r}
+# Data Processing for Hydroelectric
+hydro_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Hydro Generation - TWh")
+hydro_generation_df <- process_space_time_data(hydro_generation, x_start=1, x_end=55, y_start=4, y_end=106)
+
+# Tidy data
+hydro_generation_df <- hydro_generation_df %>%
+  gather(key = "country", value = "generation", -year)
+
+hydro_generation_df
+
+# Write to CSV 
+write.csv(hydro_generation_df,'hydro_generation.csv', row.names = TRUE)
+```
+
+```{r}
+# Data Processing for Total Renewables
+renewables_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Renewables - TWh")
+renewables_generation_df <- process_space_time_data(renewables_generation, x_start=1, x_end=55, y_start=4, y_end=106)
+
+# Tidy data
+renewables_generation_df <- renewables_generation_df %>%
+  gather()
+
+
 ```

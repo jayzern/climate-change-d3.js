@@ -6,8 +6,6 @@
  */
 
 import { plot_line_temp, plot_line_co2, plot_line_co2_ratio } from './line_animations.js';
-//import { plot_line_co2} from './line_animations.js';
-//import { plot_line_co2_ratio } from './line_animations.js';
 import { plot_top_countries } from './top_countries.js';
 import { plot_map_2d } from './map_2d.js';
 
@@ -129,7 +127,7 @@ var scrollVis = function() {
         // Most sections do not need to be updated
         // for all scrolling and so are set to
         // no-op functions.
-        for (var i = 0; i < 5; i++) {
+        for (var i = 0; i < 7; i++) {
             updateFunctions[i] = function() {};
         }
     };
@@ -156,7 +154,7 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 1);
       
-      var path = g.select('.temp_path');
+        var path = g.select('#temp_path');
         var pathlength = path.node().getTotalLength();
         var transitionPath = d3.transition()
             .ease(d3.easeExp)
@@ -167,7 +165,7 @@ var scrollVis = function() {
             .attr("stroke-dashoffset", 0);
 
         // Retransitioning of Text
-        g.select('.temp_path_text')
+        g.select('#temp_path_text')
             .style("opacity","0")
             .transition()
             .ease(d3.easeExp,100)
@@ -187,7 +185,14 @@ var scrollVis = function() {
           .transition()
             .duration(600)
             .style('opacity', 0);
-        var path = g.select('.co2_path');
+
+        // Show current graph
+        g.selectAll('.co2_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        var path = g.select('#co2_path');
         var pathlength = path.node().getTotalLength();
         var transitionPath = d3.transition()
             .ease(d3.easeExp)
@@ -197,24 +202,18 @@ var scrollVis = function() {
             .attr("stroke-dashoffset", 0);
 
         // Retransitioning of Text
-        g.select('.co2_path_text')
+        g.select('#co2_path_text')
             .style("opacity","0")
             .transition()
             .ease(d3.easeExp,100)
             .duration(7000)
             .style("opacity","1");
 
-        // Show current graph
-        g.selectAll('.co2_plot')
-            .transition()
-            .duration(600)
-            .attr('opacity', 1);
-
         // Set next graph to be invisible
         g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 0);
     }
   
     function showCO2RatioLine() {
@@ -222,10 +221,16 @@ var scrollVis = function() {
         g.selectAll('.co2_plot')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 0);
+
+        // Show current graph
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
 
         // Retransitioning of Line Graph
-        var path = g.select('.co2_ratio_path');
+        var path = g.select('#co2_ratio_path');
         var pathlength = path.node().getTotalLength();
         var transitionPath = d3.transition()
             .ease(d3.easeExp)
@@ -235,27 +240,30 @@ var scrollVis = function() {
             .attr("stroke-dashoffset", 0);
 
         // Retransitioning of Text
-        g.select('.co2_ratio_path_text')
+        g.select('#co2_ratio_path_text')
             .style("opacity","0")
             .transition()
             .ease(d3.easeExp,100)
             .duration(7000)
             .style("opacity","1");
 
-        // Show current graph
-        g.selectAll('.co2_ratio_plot')
-            .transition()
-            .duration(600)
-            .attr('opacity', 1);
-
         // Set next graph to be invisible
-        g.selectAll('.map-2d')
+        g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 0);
+        
+        g.selectAll('.map-2d-hydro circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
     }
       
     function showMapHydro() {
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity',0);
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
@@ -330,7 +338,6 @@ var scrollVis = function() {
             .transition()
             .duration(600)
             .style('opacity', 1);
-        console.log('hi');
         show_top_countries();
     }
 

@@ -59,7 +59,7 @@ export function plot_map_2d(data, g) {
         .append('path')
         .attr('fill', 'white')
         .attr('d', d3.geoPath().projection(map2dProjection))
-        .style('stroke', '#000');
+        .style('stroke', '#000')
 
     // Add title
     chart.append('text')

@@ -61,8 +61,7 @@ ggplot(df, aes(x=renew_ratio, y=emission_ratio)) +
 ```
 
 
-Additionally the large number of points on the left side of the plot is likely a result of having a low renewable ratio. 
-
+Additionally the large number of points on the left side of the plot is likely the result of countrys' having a low renewable ratio. These countries with low renewable ratios likely won't see a impact on their emissions as a result of renewables because of the low amount of renewable energy. As a result, there isn't a relationship between renewables and emissions when renewables is close to zero, so the emissions ratios for these low renewable energy countries varies widely. However, when moving toward higher renewable ratios, the downward trends begins appearing.
 
 
 

@@ -5,6 +5,7 @@
  * http://bost.ocks.org/mike/chart/
  */
 
+import { plot_line_temp, plot_line_co2, plot_line_co2_ratio } from './line_animations.js';
 import { plot_top_countries } from './top_countries.js';
 import { plot_map_2d } from './map_2d.js';
 
@@ -71,6 +72,9 @@ var scrollVis = function() {
         });
     };
 
+    var show_line_temp;
+    var show_line_co2;
+    var show_line_co2_ratio;
     var show_top_countries;
     var show_map_2d;
     /**
@@ -78,29 +82,20 @@ var scrollVis = function() {
      * sections of the visualization.
      */
     var setupVis = function(data) {
-        // JAY: add graphs here
-        g.append('rect')
-            .attr('class', 'red-rect')
-            .attr('x', '0')
-            .attr('y', '0')
-            .attr('width', '300')
-            .attr('height', '300')
-            .attr('fill', 'red')
-            .attr('opacity', 0);
+        // Show Animated Line Plot with Temperature
+        show_line_temp = plot_line_temp(data, g);
 
-        g.append('rect')
-            .attr('class', 'green-rect')
-            .attr('x', '0')
-            .attr('y', '0')
-            .attr('width', '300')
-            .attr('height', '300')
-            .attr('fill', 'green')
-            .attr('opacity', 0);
+        // Show Animated Line Plot with CO2
+        show_line_co2 = plot_line_co2(data, g);
+
+        // Show Animated Line Plot with CO2 Ratio
+        show_line_co2_ratio = plot_line_co2_ratio(data, g);
 
         // Show Map 2d for renewables and emissions
         show_map_2d = plot_map_2d(data, g);
 
         // Top Countries Plot
+
         show_top_countries = plot_top_countries(
             data['top_countries_ratios'],
             data['region_map']
@@ -117,10 +112,14 @@ var scrollVis = function() {
     var setupSections = function() {
         // activateFunctions are called each
         // time the active section changes
-        activateFunctions[0] = showMapHydro;
-        activateFunctions[1] = showMapWind;
-        activateFunctions[2] = showMapSolar;
-        activateFunctions[3] = showTopCountries;
+        activateFunctions[0] = showTempLine; 
+        activateFunctions[1] = showCO2Line;
+        activateFunctions[2] = showCO2RatioLine;
+        activateFunctions[3] = showMapHydro;
+        activateFunctions[4] = showMapWind;
+        activateFunctions[5] = showMapSolar;
+        activateFunctions[6] = showTopCountries;
+
 
         // updateFunctions are called while
         // in a particular section to update
@@ -128,7 +127,7 @@ var scrollVis = function() {
         // Most sections do not need to be updated
         // for all scrolling and so are set to
         // no-op functions.
-        for (var i = 0; i < 4; i++) {
+        for (var i = 0; i < 7; i++) {
             updateFunctions[i] = function() {};
         }
     };
@@ -148,29 +147,143 @@ var scrollVis = function() {
      *
      */
 
+    function showTempLine() {
+        // Set first graph to be visible
+        g.selectAll('.temp_plot')
+       .transition()
+            .duration(600)
+            .style('opacity', 1);
+      
+        var path = g.select('#temp_path');
+        var pathlength = path.node().getTotalLength();
+        var transitionPath = d3.transition()
+            .ease(d3.easeExp)
+            .duration(4000);
+        path.attr("stroke-dashoffset", pathlength);
+        path.transition(transitionPath)
+            .attr("stroke", "darkred")
+            .attr("stroke-dashoffset", 0);
+
+        // Retransitioning of Text
+        g.select('#temp_path_text')
+            .style("opacity","0")
+            .transition()
+            .ease(d3.easeExp,100)
+            .duration(7000)
+            .style("opacity","1");
+
+        // Set next graph to be invisible when scroll back up
+        g.selectAll('.co2_plot')
+          .transition()
+          .duration(600)
+          .style('opacity', 0);
+    }
+  
+    function showCO2Line() {
+        // Set previous graph to be invisible
+        g.selectAll('.temp_plot')
+          .transition()
+            .duration(600)
+            .style('opacity', 0);
+
+        // Show current graph
+        g.selectAll('.co2_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        var path = g.select('#co2_path');
+        var pathlength = path.node().getTotalLength();
+        var transitionPath = d3.transition()
+            .ease(d3.easeExp)
+            .duration(4000);
+        path.attr("stroke-dashoffset", pathlength);
+        path.transition(transitionPath)
+            .attr("stroke-dashoffset", 0);
+
+        // Retransitioning of Text
+        g.select('#co2_path_text')
+            .style("opacity","0")
+            .transition()
+            .ease(d3.easeExp,100)
+            .duration(7000)
+            .style("opacity","1");
+
+        // Set next graph to be invisible
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+    }
+  
+    function showCO2RatioLine() {
+        // Set previous graph to be invisible
+        g.selectAll('.co2_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+
+        // Show current graph
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        // Retransitioning of Line Graph
+        var path = g.select('#co2_ratio_path');
+        var pathlength = path.node().getTotalLength();
+        var transitionPath = d3.transition()
+            .ease(d3.easeExp)
+            .duration(4000);
+        path.attr("stroke-dashoffset", pathlength);
+        path.transition(transitionPath)
+            .attr("stroke-dashoffset", 0);
+
+        // Retransitioning of Text
+        g.select('#co2_ratio_path_text')
+            .style("opacity","0")
+            .transition()
+            .ease(d3.easeExp,100)
+            .duration(7000)
+            .style("opacity","1");
+
+        // Set next graph to be invisible
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+        
+        g.selectAll('.map-2d-hydro circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+    }
+      
     function showMapHydro() {
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity',0);
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
             .style('opacity', 1);
-
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
             .style('opacity', 1);
-
         g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
             .style('opacity', 0);
     }
 
+
     function showMapWind() {
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
             .style('opacity', 0);
-
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
@@ -203,6 +316,7 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 1);
 
+        // Set next graph to be invisible
         d3.select('#top_countries_ratio')
             .transition()
             .duration(600)
@@ -224,7 +338,6 @@ var scrollVis = function() {
             .transition()
             .duration(600)
             .style('opacity', 1);
-
         show_top_countries();
     }
 
@@ -326,9 +439,9 @@ function display(data) {
 }
 
 // load data and display
-// d3.csv('http://localhost:8888/data/solar_generation.csv', display);
 
 d3.queue()
+    .defer(d3.csv, 'data/annual_temp_emissions.csv')
     .defer(
         d3.json,
         'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson'
@@ -343,6 +456,7 @@ d3.queue()
     .defer(d3.csv, 'data/regions_mapping.csv')
     .await(function(
         error,
+        annual_temp_emissions,
         map2D,
         geocoding,
         solar_generation,
@@ -365,6 +479,7 @@ d3.queue()
                     LAT: geocoding[i].LAT
                 };
             }
+            data['annual_temp_emissions'] = annual_temp_emissions;
             data['map2D'] = map2D;
             data['geoDict'] = geoDict;
             data['solar_generation'] = solar_generation;

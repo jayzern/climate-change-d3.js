@@ -1,4 +1,4 @@
-/**
+/*
  * scrollVis - encapsulates
  * all the code for the visualization
  * using reusable charts pattern:
@@ -129,7 +129,6 @@ var scrollVis = function() {
         activateFunctions[7] = showTopCountries;
         activateFunctions[8] = showRichEarth;
 
-
         // updateFunctions are called while
         // in a particular section to update
         // the scroll progress in that section.
@@ -175,6 +174,9 @@ var scrollVis = function() {
           .transition()
           .duration(600)
           .style('opacity', 0);
+
+        g.select('#temp_path_text')
+            .style("opacity","0")
     }
 
     function showTempLine() {
@@ -221,6 +223,9 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 0);
 
+        g.select('#temp_path_text')
+            .style("opacity","0")
+
         // Show current graph
         g.selectAll('.co2_plot')
             .transition()
@@ -249,6 +254,9 @@ var scrollVis = function() {
             .transition()
             .duration(600)
             .style('opacity', 0);
+
+        g.select('#co2_ratio_path_text')
+            .style("opacity","0")
     }
   
     function showCO2RatioLine() {
@@ -257,6 +265,9 @@ var scrollVis = function() {
             .transition()
             .duration(600)
             .style('opacity', 0);
+
+        g.select('#co2_path_text')
+            .style("opacity","0")
 
         // Show current graph
         g.selectAll('.co2_ratio_plot')
@@ -295,6 +306,8 @@ var scrollVis = function() {
     }
       
     function showMapHydro() {
+        g.select('#co2_ratio_path_text')
+            .style("opacity","0")
         g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)

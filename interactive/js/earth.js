@@ -31,6 +31,7 @@ export function plot_dry_earth(g){
                             .enter().append("path")
                             .attr("class", "segment_dry")
                             .attr("d", path)
+                            .attr('transform', 'translate(-150,0)')
                             .style("stroke", "#888")
                             .style("stroke-width", "1px")
                             .style("fill", (d, i) => '#F9F0C3')
@@ -46,8 +47,9 @@ export function plot_dry_earth(g){
                     .datum(graticule)
                     .attr("class", "graticule_dry")
                     .attr("d", path)
+                    .attr('transform', 'translate(-150, 0)')
                     .style("fill", "#DBF2FB")
-                    .style("stroke", "#E6E4E4")
+                    .style("stroke", "#E6E4E4");
             }
 
             function enableRotation() {
@@ -89,6 +91,7 @@ export function plot_rich_earth(g){
                             .enter().append("path")
                             .attr("class", "segment_rich")
                             .attr("d", path)
+                            .attr('transform', 'translate(-150,0)')
                             .style("stroke", "#888")
                             .style("stroke-width", "1px")
                             .style("fill", (d, i) => '#15B535')
@@ -104,6 +107,7 @@ export function plot_rich_earth(g){
                     .datum(graticule)
                     .attr("class", "graticule_rich")
                     .attr("d", path)
+                    .attr('transform', 'translate(-150,0)')
                     .style("fill", "#90E8FA")
                     .style("stroke", "#BFEAF4")
                     .style('opacity', 0);

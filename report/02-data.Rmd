@@ -1,2 +1,32 @@
 # Data sources
 
+Our study involves combining and processing several datasets from different sources listed below:
+
+- [BP’s Statistical Review of World Energy](https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy.html):
+Contains energy data at the country level split by energy sources (oil, gas, coal, nuclear, solar, wind, biofuels, etc) and CO2 emissions data from 1965 to 2018.
+
+- [Thematic Mapping World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php)"
+Provides shape file polygon data for country borders used for plotting as well as country metadata such as ISO codes, land area, population, etc.
+- [UN Region Codelist](https://apps.who.int/gho/data/node.metadata.UNREGION?lang=en):
+Provides mapping for region codes to region names
+
+- [International Monetary Fund](https://www.imf.org/en/Data):
+Provides a range of time series data for economic and financial indicators.
+
+- [The World Bank’s Data Bank](https://databank.worldbank.org/home):
+Provides a collection of time series data for various topics around the world, such as World Development Indicators, Statistical Capacity Indicators, Educational Statistics, Gender Statistics, etc.
+
+- [Global Finance’s Global Data](https://www.gfmag.com/global-data/):
+Provides economic data for  finance and economics,  and non-economic data for politics and social measures.
+
+- [Statista](https://www.statista.com/):
+Provides all kinds of business data, such as social media, e-commerce, gaming, film industry, etc. 
+
+- [Sustainable Development Goals](http://www.sdg.org/#catalog):
+Provides SDG related data sources to aid for evidence-based decision-making and advocacy.
+
+- [NAICS Association](https://www.naics.com/business-lists/counts-by-country/):
+Provides data regarding different businesses around the world.
+
+- [Central Intelligence Agency’s World Factbook](https://www.cia.gov/library/publications/resources/the-world-factbook/):
+Provides information on the history, people and society, government, economy, energy, geography, communications, transportation, military, and transnational issues for 267 world entities.

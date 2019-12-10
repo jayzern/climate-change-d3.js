@@ -97,8 +97,11 @@ var scrollVis = function() {
         show_map_2d = plot_map_2d(data, g);
 
         // Top Countries Plot
-        show_top_countries = plot_top_countries(data['top_countries_ratios']);
-         
+
+        show_top_countries = plot_top_countries(
+            data['top_countries_ratios'],
+            data['region_map']
+        );
     };
 
     /**
@@ -114,8 +117,11 @@ var scrollVis = function() {
         activateFunctions[0] = showTempLine; 
         activateFunctions[1] = showCO2Line;
         activateFunctions[2] = showCO2RatioLine;
-        activateFunctions[3] = showMap2d;
-        activateFunctions[4] = showTopCountries;
+        activateFunctions[3] = showMapHydro;
+        activateFunctions[4] = showMapWind;
+        activateFunctions[5] = showMapSolar;
+        activateFunctions[6] = showTopCountries;
+
 
         // updateFunctions are called while
         // in a particular section to update
@@ -146,12 +152,11 @@ var scrollVis = function() {
     function showTempLine() {
         // Set first graph to be visible
         g.selectAll('.temp_plot')
-            .transition()
+       .transition()
             .duration(600)
-            .attr('opacity', 1);
-
-        // Retransitioning of Line Graph
-        var path = g.select('.temp_path');
+            .style('opacity', 1);
+      
+      var path = g.select('.temp_path');
         var pathlength = path.node().getTotalLength();
         var transitionPath = d3.transition()
             .ease(d3.easeExp)
@@ -171,19 +176,17 @@ var scrollVis = function() {
 
         // Set next graph to be invisible when scroll back up
         g.selectAll('.co2_plot')
-            .transition()
-            .duration(600)
-            .attr('opacity', 0);
+          .transition()
+          .duration(600)
+          .style('opacity', 0);
     }
-
+  
     function showCO2Line() {
         // Set previous graph to be invisible
         g.selectAll('.temp_plot')
-            .transition()
+          .transition()
             .duration(600)
-            .attr('opacity', 0);
-
-        // Retransitioning of Line Graph
+            .style('opacity', 0);
         var path = g.select('.co2_path');
         var pathlength = path.node().getTotalLength();
         var transitionPath = d3.transition()
@@ -213,7 +216,7 @@ var scrollVis = function() {
             .duration(600)
             .attr('opacity', 0);
     }
-
+  
     function showCO2RatioLine() {
         // Set previous graph to be invisible
         g.selectAll('.co2_plot')
@@ -251,19 +254,59 @@ var scrollVis = function() {
             .duration(600)
             .attr('opacity', 0);
     }
-
-    function showMap2d() {
-        // Set previous graph to be invisible
-        g.selectAll('.co2_ratio_plot')
+      
+    function showMapHydro() {
+        g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
-
-        // Set current graph to be visible
-        g.selectAll('.map-2d')
+            .style('opacity', 1);
+        g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
-            .attr('opacity', 1);
+            .style('opacity', 1);
+        g.selectAll('.map-2d-wind circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+    }
+
+
+    function showMapWind() {
+        g.selectAll('.map-2d-hydro circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-wind circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-solar circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+    }
+
+    function showMapSolar() {
+        g.selectAll('.map-2d-wind circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
+
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-solar circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
 
         // Set next graph to be invisible
         d3.select('#top_countries_ratio')
@@ -277,10 +320,11 @@ var scrollVis = function() {
     }
 
     function showTopCountries() {
-        g.selectAll('.map-2d')
+        // Set Jay's section to 0
+        g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 0);
 
         d3.select('#top_countries_ratio')
             .transition()
@@ -390,23 +434,31 @@ function display(data) {
 // load data and display
 
 d3.queue()
+    .defer(d3.csv, 'data/annual_temp_emissions.csv')
     .defer(
         d3.json,
         'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson'
     )
-    .defer(d3.csv, 'http://localhost:8888/data/annual_temp_emissions.csv')
-    .defer(d3.csv, 'http://localhost:8888/data/geocoding.csv')
-    .defer(d3.csv, 'http://localhost:8888/data/solar_generation.csv')
-    .defer(d3.csv, 'http://localhost:8888/data/renewables_vs_emissions.csv')
-    .defer(d3.csv, 'http://localhost:8888/data/top_countries_ratio.csv')
+    .defer(d3.csv, 'data/geocoding.csv')
+    .defer(d3.csv, 'data/solar_generation.csv')
+    .defer(d3.csv, 'data/wind_generation.csv')
+    .defer(d3.csv, 'data/hydro_generation.csv')
+    .defer(d3.csv, 'data/carbon_generation.csv')
+    .defer(d3.csv, 'data/renewables_generation.csv')
+    .defer(d3.csv, 'data/top_countries_ratio.csv')
+    .defer(d3.csv, 'data/regions_mapping.csv')
     .await(function(
         error,
-        map2D,
         annual_temp_emissions,
+        map2D,
         geocoding,
         solar_generation,
-        ren_vs_emi,
-        top_countries_ratios
+        wind_generation,
+        hydro_generation,
+        carbon_generation,
+        renewables_generation,
+        top_countries_ratios,
+        region_map,
     ) {
         if (error) {
             console.error('Oh dear, something went wrong: ' + error);
@@ -420,12 +472,16 @@ d3.queue()
                     LAT: geocoding[i].LAT
                 };
             }
-            data['map2D'] = map2D;
             data['annual_temp_emissions'] = annual_temp_emissions;
+            data['map2D'] = map2D;
             data['geoDict'] = geoDict;
             data['solar_generation'] = solar_generation;
-            data['renewables_vs_emissions'] = ren_vs_emi;
+            data['wind_generation'] = wind_generation;
+            data['hydro_generation'] = hydro_generation;
+            data['carbon_generation'] = carbon_generation;
+            data['renewables_generation'] = renewables_generation;
             data['top_countries_ratios'] = top_countries_ratios;
+            data['region_map'] = region_map;
             display(data);
         }
     });

@@ -24,7 +24,7 @@
 <meta name="author" content="Timothy Huang, Jay Zern Ng, Yuki Nishimura" />
 
 
-<meta name="date" content="2019-11-28" />
+<meta name="date" content="2019-12-09" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -52,6 +52,68 @@
 
 
 
+<style type="text/css">
+a.sourceLine { display: inline-block; line-height: 1.25; }
+a.sourceLine { pointer-events: none; color: inherit; text-decoration: inherit; }
+a.sourceLine:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode { white-space: pre; position: relative; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+code.sourceCode { white-space: pre-wrap; }
+a.sourceLine { text-indent: -1em; padding-left: 1em; }
+}
+pre.numberSource a.sourceLine
+  { position: relative; left: -4em; }
+pre.numberSource a.sourceLine::before
+  { content: attr(title);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; pointer-events: all; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  }
+@media screen {
+a.sourceLine::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
@@ -73,7 +135,9 @@
 <li class="chapter" data-level="2" data-path="data-sources.html"><a href="data-sources.html"><i class="fa fa-check"></i><b>2</b> Data sources</a></li>
 <li class="chapter" data-level="3" data-path="data-transformation.html"><a href="data-transformation.html"><i class="fa fa-check"></i><b>3</b> Data transformation</a></li>
 <li class="chapter" data-level="4" data-path="missing-values.html"><a href="missing-values.html"><i class="fa fa-check"></i><b>4</b> Missing values</a></li>
-<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a></li>
+<li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a><ul>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#emissions-and-renewables"><i class="fa fa-check"></i><b>5.1</b> Emissions and Renewables</a></li>
+</ul></li>
 <li class="chapter" data-level="6" data-path="interactive-component.html"><a href="interactive-component.html"><i class="fa fa-check"></i><b>6</b> Interactive component</a></li>
 <li class="chapter" data-level="7" data-path="conclusion.html"><a href="conclusion.html"><i class="fa fa-check"></i><b>7</b> Conclusion</a></li>
 <li class="divider"></li>
@@ -97,7 +161,45 @@
             <section class="normal" id="section-">
 <div id="results" class="section level1">
 <h1><span class="header-section-number">Chapter 5</span> Results</h1>
+<div id="emissions-and-renewables" class="section level2">
+<h2><span class="header-section-number">5.1</span> Emissions and Renewables</h2>
+<p>Overall, CO2 emissions have been steadily increasing across the globe.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">df <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="st">  </span><span class="kw">group_by</span>(year) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="st">  </span><span class="kw">summarise</span>(<span class="dt">total_co2 =</span> <span class="kw">sum</span>(co2)) <span class="op">%&gt;%</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="st">  </span><span class="kw">ggplot</span>(<span class="kw">aes</span>(<span class="dt">x=</span>year, <span class="dt">y=</span>total_co2)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="st">    </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&quot;tan4&quot;</span>, <span class="dt">size=</span><span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-6" title="6"><span class="st">    </span><span class="kw">ggtitle</span>(<span class="st">&quot;Total CO2 Emissions 1965-2018&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-7" title="7"><span class="st">    </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;CO2 Emissions (millions of tonnes)&quot;</span>) </a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+<p>Focusing on a specific country, we can see that the United States’ CO2 emissions have also been increasing, with slight occasional drops.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">ggplot</span>(df[df[<span class="st">&quot;country&quot;</span>] <span class="op">==</span><span class="st"> &quot;United States&quot;</span>,], <span class="kw">aes</span>(<span class="dt">x=</span>year, <span class="dt">y=</span>co2)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&quot;darkred&quot;</span>, <span class="dt">size=</span><span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;US CO2 Emissions 1965-2018&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;CO2 Emissions (millions of tonnes)&quot;</span>) </a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p>Intuitively, the increase in emissions correlates with the growth of the United States. As population and industry increases, emissions end up increasing due to the increased power demand of the country. However, if we look at the amount of CO2 generated for each unit of power produced for the US, a different image appears.</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">ggplot</span>(df[df[<span class="st">&quot;country&quot;</span>] <span class="op">==</span><span class="st"> &quot;United States&quot;</span>,], <span class="kw">aes</span>(<span class="dt">x=</span>year, <span class="dt">y=</span>emission_ratio)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&quot;darkgreen&quot;</span>, <span class="dt">size=</span><span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;US CO2 Emissions Ratio 1965-2018&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;CO2 Emissions Ratio (millions of tonnes/TWh)&quot;</span>) </a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>This plot shows that the United States’ emissions ratio (millions of tonnes of CO2 emitted per each TWh generated) has been decreasing throughout time. This decrease implies that the US is becoming more CO2 efficient when generating power and can be due to a variety of factors, such as switching to more renewable energy sources and increaseing the efficiency of both renewable and non-renewable energy generation. We can see the relationship between the decreasing emission ratio and switching to renewable energy sources by plotting the US’s renewable ratio, which is the percent of energy consumed that was generated from renewable sources.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">ggplot</span>(df[df[<span class="st">&quot;country&quot;</span>] <span class="op">==</span><span class="st"> &quot;United States&quot;</span>,], <span class="kw">aes</span>(<span class="dt">x=</span>year, <span class="dt">y=</span>renew_ratio)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="st">  </span><span class="kw">geom_line</span>(<span class="dt">color=</span><span class="st">&quot;darkblue&quot;</span>, <span class="dt">size=</span><span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;US Renewable Ratio 1965-2018&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Year&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Renewable Ratio (TWh/TWh)&quot;</span>) </a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>The sharp increase in the US’s renewable energy usage around 2010 seems to match with the sharper decrease in the emissions ratio. These plots show that while the US is still emitting large amounts of CO2, they are making changes to reduce the amount of CO2 released during power generation.</p>
+<p>Interestingly, this relationship between the renewable ratio and emissions ratio appears not just in the US, but across the globe. The plot below plots each country’s yearly emissions ratio versus their renewable ratio. There is a noticeable downward trend in the plot, suggesting that as a country’s renewable ratio increases (meaning they switch to more renewable energy sources), their emissions ratio decreases (meaning they release less CO2 per unit power generated).</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1"><span class="kw">ggplot</span>(df, <span class="kw">aes</span>(<span class="dt">x=</span>renew_ratio, <span class="dt">y=</span>emission_ratio)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-2" title="2"><span class="st">  </span><span class="kw">geom_point</span>(<span class="dt">color=</span><span class="st">&quot;darkgreen&quot;</span>, <span class="dt">size=</span><span class="dv">1</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Yearly Emissions Ratio vs Renewable Ratio&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb5-4" title="4"><span class="st">  </span><span class="kw">labs</span>(<span class="dt">x =</span> <span class="st">&quot;Renewable Ratio (TWh/TWh)&quot;</span>, <span class="dt">y =</span> <span class="st">&quot;Emissions Ratio (millions of tonnnes CO2 / TWh)&quot;</span>) </a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-5-1.png" width="768" /></p>
+<p>Additionally the large number of points on the left side of the plot is likely the result of countrys’ having a low renewable ratio. These countries with low renewable ratios likely won’t see a impact on their emissions as a result of renewables because of the low amount of renewable energy. As a result, there isn’t a relationship between renewables and emissions when renewables is close to zero, so the emissions ratios for these low renewable energy countries varies widely. However, when moving toward higher renewable ratios, the downward trends begins appearing.</p>
 
+</div>
 </div>
             </section>
 

@@ -1,4 +1,4 @@
-export function plot_top_countries(data) {
+export function plot_top_countries(data, region_map) {
     var countries = [];
     var energy = [];
 
@@ -7,13 +7,18 @@ export function plot_top_countries(data) {
         energy.push(+data[0][key]);
     });
 
+    var region_mapping = {};
+    region_map.forEach(function(d) {
+        region_mapping[d['NAME']] = d['region'];
+    });
+
     const svg = d3.select('svg');
 
     const margin = {
-        top: 100,
-        bottom: 100,
-        left: 100,
-        right: 100
+        top: 80,
+        bottom: 80,
+        left: 80,
+        right: 80
     };
 
     const width = +svg.attr('width') - margin.left - margin.right;
@@ -62,18 +67,20 @@ export function plot_top_countries(data) {
         .append('text')
         .attr('transform', 'rotate(-90)')
         .attr('y', -margin.left)
-        .attr('dy', '5em')
+        .attr('dy', '3em')
         .style('text-anchor', 'end')
         .style('fill', 'gray')
         .style('font-size', '1.1em')
-        .text('Renewable Energy Generation / Total Energy Consumed');
+        .text('Renewable Energy Generated / Total Energy Consumed');
 
-    // Tooltip
-    // var tooltip = d3
-    //     .select('#top_countries_ratio')
-    //     .append('text')
-    //     .attr('class', 'tooltipscatter')
-    //     .style('opacity', 0);
+    // Add title
+    chart
+        .append('text')
+        .attr('x', width / 2)
+        .attr('y', -20)
+        .text('Countries Ranked By Renewable Ratio, 2018')
+        .style('text-anchor', 'middle')
+        .style('font-weight', '800');
 
     var tooltip = d3
         .select('#vis')
@@ -99,7 +106,7 @@ export function plot_top_countries(data) {
         .attr('cy', 0)
         .attr('r', 3)
         .style('fill', function(d, i) {
-            return color(i);
+            return color(region_mapping[countries[i]]);
         })
         .on('mouseover', function(d, i) {
             tooltip
@@ -125,6 +132,38 @@ export function plot_top_countries(data) {
                 .duration(500)
                 .style('opacity', 0);
         });
+
+    // Code adapted from http://bl.ocks.org/weiglemc/6185069
+    // legend
+    var legend = chart
+        .append('g')
+        .attr('transform', 'translate(' + (-width + 100) + ',0)')
+        .selectAll('.legend')
+        .data(color.domain())
+        .enter()
+        .append('g')
+        .attr('class', 'legend')
+        .attr('transform', function(d, i) {
+            return 'translate(0,' + i * 20 + ')';
+        });
+
+    // legend colors
+    legend
+        .append('circle')
+        .attr('cx', width - 10)
+        .attr('cy', 6)
+        .attr('r', 4)
+        .style('fill', color)
+        .style('opacity', 0.9);
+
+    // legend text
+    legend
+        .append('text')
+        .attr('x', width - 24)
+        .attr('y', 5)
+        .attr('dy', '.35em')
+        .style('text-anchor', 'end')
+        .text(d => d);
 
     return function() {
         d3.selectAll('.dot')

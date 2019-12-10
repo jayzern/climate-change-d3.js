@@ -101,8 +101,10 @@ var scrollVis = function() {
         show_map_2d = plot_map_2d(data, g);
 
         // Top Countries Plot
-        show_top_countries = plot_top_countries(data['top_countries_ratios']);
-
+        show_top_countries = plot_top_countries(
+            data['top_countries_ratios'],
+            data['region_map']
+        );
     };
 
     /**
@@ -328,6 +330,7 @@ d3.queue()
     .defer(d3.csv, 'data/carbon_generation.csv')
     .defer(d3.csv, 'data/renewables_generation.csv')
     .defer(d3.csv, 'data/top_countries_ratio.csv')
+    .defer(d3.csv, 'data/regions_mapping.csv')
     .await(function(
         error,
         map2D,
@@ -337,7 +340,8 @@ d3.queue()
         hydro_generation,
         carbon_generation,
         renewables_generation,
-        top_countries_ratios
+        top_countries_ratios,
+        region_map,
     ) {
         if (error) {
             console.error('Oh dear, something went wrong: ' + error);
@@ -359,6 +363,7 @@ d3.queue()
             data['carbon_generation'] = carbon_generation;
             data['renewables_generation'] = renewables_generation;
             data['top_countries_ratios'] = top_countries_ratios;
+            data['region_map'] = region_map;
             display(data);
         }
     });

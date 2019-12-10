@@ -103,6 +103,35 @@ export function plot_map_2d(data, g) {
         })
         .style('stroke', '#000')
         .style('fill', 'yellow')
+        .on('mouseover', function(d, i) {
+            console.log(this);
+
+            // tooltip
+            //     .transition()
+            //     .duration(200)
+            //     .style('opacity', 0.9);
+            //
+            // tooltip
+            //     .html(
+            //         countries[i] +
+            //             '<br/> Rank: ' +
+            //             (i + 1) +
+            //             '<br/> Renewable Percent: ' +
+            //             (d * 100).toFixed(1) +
+            //             '%'
+            //     )
+            //     .style('top', yScale(d) + 'px')
+            //     .style('left', xScale(i + 1) + 'px')
+            //     .style('display', 'block');
+        })
+        .on('mouseout', function(d) {
+
+            // console.log(this);
+            // tooltip
+            //     .transition()
+            //     .duration(500)
+            //     .style('opacity', 0);
+        })
         .style('opacity', 0);
 
     chart.append('g')
@@ -131,6 +160,7 @@ export function plot_map_2d(data, g) {
         })
         .style('stroke', '#000')
         .style('fill', 'gray')
+        .style('pointer-events', 'none')
         .style('opacity', 0);
 
     chart.append('g')
@@ -159,11 +189,12 @@ export function plot_map_2d(data, g) {
         })
         .style('stroke', '#000')
         .style('fill', 'blue')
+        .style('pointer-events', 'none')
         .style('opacity', 0);
 
     // Slider
-    var dataTime = d3.range(0, 10).map(function(d) {
-        return new Date(2009 + d, 10, 3);
+    var dataTime = d3.range(0, 20).map(function(d) {
+        return new Date(1999 + d, 10, 3);
     });
 
     var sliderTime = d3
@@ -183,8 +214,6 @@ export function plot_map_2d(data, g) {
                 var newSolarData = getMapData('solar_generation', newYear)
                 var newWindData = getMapData('wind_generation', newYear)
                 var newHydroData = getMapData('hydro_generation', newYear)
-
-                console.log(g.selectAll('.map-2d-solar circle'))
 
                 // Update Solar
                 //g.select('.map-2d circle')

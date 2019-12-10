@@ -6,7 +6,11 @@
  */
 
 import { plot_dry_earth, plot_rich_earth } from './earth.js';
-import { plot_line_temp, plot_line_co2, plot_line_co2_ratio } from './line_animations.js';
+import {
+    plot_line_temp,
+    plot_line_co2,
+    plot_line_co2_ratio
+} from './line_animations.js';
 import { plot_top_countries } from './top_countries.js';
 import { plot_map_2d } from './map_2d.js';
 
@@ -103,7 +107,8 @@ var scrollVis = function() {
         // Top Countries Plot
         show_top_countries = plot_top_countries(
             data['top_countries_ratios'],
-            data['region_map']);
+            data['region_map']
+        );
 
         // Show the rich earth
         show_rich_earth = plot_rich_earth(g);
@@ -119,13 +124,13 @@ var scrollVis = function() {
     var setupSections = function() {
         // activateFunctions are called each
         // time the active section changes
-        activateFunctions[0] = showDryEarth; 
+        activateFunctions[0] = showDryEarth;
         activateFunctions[1] = showTempLine;
         activateFunctions[2] = showCO2Line;
         activateFunctions[3] = showCO2RatioLine;
         activateFunctions[4] = showMapHydro;
         activateFunctions[5] = showMapWind;
-        activateFunctions[6] = showMapSolar; 
+        activateFunctions[6] = showMapSolar;
         activateFunctions[7] = showTopCountries;
         activateFunctions[8] = showRichEarth;
 
@@ -156,229 +161,258 @@ var scrollVis = function() {
      */
     function showDryEarth() {
         g.selectAll('.dry_earth')
-        .transition()
-        .duration(600)
-        .style('opacity', 1)
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         g.selectAll('.segment_dry')
-          .transition()
-          .duration(600)
-          .style('opacity', 0.6);
+            .transition()
+            .duration(600)
+            .style('opacity', 0.6);
 
         g.selectAll('.graticule_dry')
-          .transition()
-          .duration(600)
-          .style('opacity',1);
-        
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
         g.selectAll('.temp_plot')
-          .transition()
-          .duration(600)
-          .style('opacity', 0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         g.select('#temp_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
+            .style('pointer-events', 'none');
     }
 
     function showTempLine() {
         g.selectAll('.dry_earth')
-        .transition()
-        .duration(600)
-        .style('opacity', 0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         // Set first graph to be visible
         g.selectAll('.temp_plot')
-       .transition()
+            .transition()
             .duration(600)
-            .style('opacity', 1);
-      
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+
         var path = g.select('#temp_path');
         var pathlength = path.node().getTotalLength();
-        var transitionPath = d3.transition()
+        var transitionPath = d3
+            .transition()
             .ease(d3.easeExp)
             .duration(4000);
-        path.attr("stroke-dashoffset", pathlength);
+        path.attr('stroke-dashoffset', pathlength);
         path.transition(transitionPath)
-            .attr("stroke", "darkred")
-            .attr("stroke-dashoffset", 0);
+            .attr('stroke', 'darkred')
+            .attr('stroke-dashoffset', 0);
 
         // Retransitioning of Text
         g.select('#temp_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
             .transition()
-            .ease(d3.easeExp,100)
+            .ease(d3.easeExp, 100)
             .duration(7000)
-            .style("opacity","1");
+            .style('opacity', '1')
+            .style('pointer-events', 'all');
 
         // Set next graph to be invisible when scroll back up
         g.selectAll('.co2_plot')
-          .transition()
-          .duration(600)
-          .style('opacity', 0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
-  
+
     function showCO2Line() {
         // Set previous graph to be invisible
         g.selectAll('.temp_plot')
-          .transition()
+            .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         g.select('#temp_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
+            .style('pointer-events', 'none');
 
         // Show current graph
         g.selectAll('.co2_plot')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         var path = g.select('#co2_path');
         var pathlength = path.node().getTotalLength();
-        var transitionPath = d3.transition()
+        var transitionPath = d3
+            .transition()
             .ease(d3.easeExp)
             .duration(4000);
-        path.attr("stroke-dashoffset", pathlength);
-        path.transition(transitionPath)
-            .attr("stroke-dashoffset", 0);
+        path.attr('stroke-dashoffset', pathlength);
+        path.transition(transitionPath).attr('stroke-dashoffset', 0);
 
         // Retransitioning of Text
         g.select('#co2_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
             .transition()
-            .ease(d3.easeExp,100)
+            .ease(d3.easeExp, 100)
             .duration(7000)
-            .style("opacity","1");
+            .style('opacity', '1')
+            .style('pointer-events', 'all');
 
         // Set next graph to be invisible
         g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         g.select('#co2_ratio_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
+            .style('pointer-events', 'none');
     }
-  
+
     function showCO2RatioLine() {
         // Set previous graph to be invisible
         g.selectAll('.co2_plot')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         g.select('#co2_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
+            .style('pointer-events', 'none');
 
         // Show current graph
         g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         // Retransitioning of Line Graph
         var path = g.select('#co2_ratio_path');
         var pathlength = path.node().getTotalLength();
-        var transitionPath = d3.transition()
+        var transitionPath = d3
+            .transition()
             .ease(d3.easeExp)
             .duration(4000);
-        path.attr("stroke-dashoffset", pathlength);
-        path.transition(transitionPath)
-            .attr("stroke-dashoffset", 0);
+        path.attr('stroke-dashoffset', pathlength);
+        path.transition(transitionPath).attr('stroke-dashoffset', 0);
 
         // Retransitioning of Text
         g.select('#co2_ratio_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
             .transition()
-            .ease(d3.easeExp,100)
+            .ease(d3.easeExp, 100)
             .duration(7000)
-            .style("opacity","1");
+            .style('opacity', '1')
+            .style('pointer-events', 'all');
 
         // Set next graph to be invisible
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .style('opacity', 0);
-        
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
-      
+
     function showMapHydro() {
-        g.select('#co2_ratio_path_text')
-            .style("opacity","0")
+        g.select('#co2_ratio_path_text').style('opacity', '0');
+
         g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)
-            .style('opacity',0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+
         g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
-
 
     function showMapWind() {
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         g.selectAll('.map-2d-solar circle')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
 
     function showMapSolar() {
         g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         g.selectAll('.map-2d-solar circle')
             .transition()
             .duration(600)
-            .style('opacity', 1);
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         // Set next graph to be invisible
         d3.select('#top_countries_ratio')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         d3.selectAll('.dot')
             .attr('cy', 0)
             .style('opacity', 0);
-
-        d3.select('#top_countries_ratio')
-            .transition()
-            .duration(600)
-            .style('opacity', 0)
-            .style('pointer-events', 'none');
     }
 
     function showTopCountries() {
@@ -386,7 +420,8 @@ var scrollVis = function() {
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         d3.select('#top_countries_ratio')
             .transition()
@@ -394,48 +429,47 @@ var scrollVis = function() {
             .style('opacity', 1)
             .style('pointer-events', 'all');
 
-        d3.select('#top_countries_ratio')
-            .transition()
-            .duration(600)
-            .style('opacity', 1);
         show_top_countries();
 
         g.selectAll('.rich_earth')
-        .transition()
-        .duration(600)
-        .style('opacity',0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         g.selectAll('.segment_rich')
-          .transition()
-          .duration(600)
-          .style('opacity', 0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
 
         g.selectAll('.graticule_rich')
-          .transition()
-          .duration(600)
-          .style('opacity',0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
     }
 
     function showRichEarth() {
         g.selectAll('.rich_earth')
-        .transition()
-        .duration(600)
-        .style('opacity', 1)
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         g.selectAll('.segment_rich')
-          .transition()
-          .duration(600)
-          .style('opacity', 0.6);
+            .transition()
+            .duration(600)
+            .style('opacity', 0.6);
 
         g.selectAll('.graticule_rich')
-          .transition()
-          .duration(600)
-          .style('opacity',1);
-        
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
         g.selectAll('#top_countries_ratio')
-          .transition()
-          .duration(600)
-          .style('opacity', 0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         d3.selectAll('.dot')
             .attr('cy', 0)
@@ -566,7 +600,7 @@ d3.queue()
         carbon_generation,
         renewables_generation,
         top_countries_ratios,
-        region_map,
+        region_map
     ) {
         if (error) {
             console.error('Oh dear, something went wrong: ' + error);

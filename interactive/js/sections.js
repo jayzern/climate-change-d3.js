@@ -321,16 +321,22 @@ d3.queue()
         d3.json,
         'https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson'
     )
-    .defer(d3.csv, 'http://localhost:8888/data/geocoding.csv')
-    .defer(d3.csv, 'http://localhost:8888/data/solar_generation.csv')
-    .defer(d3.csv, 'http://localhost:8888/data/renewables_vs_emissions.csv')
+    .defer(d3.csv, 'data/geocoding.csv')
+    .defer(d3.csv, 'data/solar_generation.csv')
+    .defer(d3.csv, 'data/wind_generation.csv')
+    .defer(d3.csv, 'data/hydro_generation.csv')
+    .defer(d3.csv, 'data/carbon_generation.csv')
+    .defer(d3.csv, 'data/renewables_generation.csv')
     .defer(d3.csv, 'data/top_countries_ratio.csv')
     .await(function(
         error,
         map2D,
         geocoding,
         solar_generation,
-        file2,
+        wind_generation,
+        hydro_generation,
+        carbon_generation,
+        renewables_generation,
         top_countries_ratios
     ) {
         if (error) {
@@ -348,7 +354,10 @@ d3.queue()
             data['map2D'] = map2D;
             data['geoDict'] = geoDict;
             data['solar_generation'] = solar_generation;
-            data['renewables_vs_emissions'] = file2;
+            data['wind_generation'] = wind_generation;
+            data['hydro_generation'] = hydro_generation;
+            data['carbon_generation'] = carbon_generation;
+            data['renewables_generation'] = renewables_generation;
             data['top_countries_ratios'] = top_countries_ratios;
             display(data);
         }

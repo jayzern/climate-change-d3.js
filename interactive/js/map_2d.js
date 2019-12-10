@@ -8,10 +8,34 @@ export function plot_map_2d(data, g) {
         .scale(width / 1.3 / Math.PI)
         .translate([width / 2, height / 2]);
 
+    var rMin = 1;
+    var rMax = 50;
+
+    // Create Scales for each data
     var rScaleMap2dSolar = d3
         .scaleLinear()
         .domain([0, d3.max(data['solar_generation'], d => +d.generation)])
-        .range([1, 50]);
+        .range([rMin, rMax]);
+
+    var rScaleMap2dWind = d3
+        .scaleLinear()
+        .domain([0, d3.max(data['wind_generation'], d => +d.generation)])
+        .range([rMin, rMax]);
+
+    var rScaleMap2dHydro = d3
+        .scaleLinear()
+        .domain([0, d3.max(data['hydro_generation'], d => +d.generation)])
+        .range([rMin, rMax]);
+
+    var rScaleMap2dCarbon = d3
+        .scaleLinear()
+        .domain([0, d3.max(data['carbon_generation'], d => +d.generation)])
+        .range([rMin, rMax]);
+
+    var rScaleMap2dRenewables = d3
+        .scaleLinear()
+        .domain([0, d3.max(data['renewables_generation'], d => +d.generation)])
+        .range([rMin, rMax]);
 
     // Keep track of year for scroller
     var mapYear = '2018';
@@ -27,6 +51,13 @@ export function plot_map_2d(data, g) {
         .attr('d', d3.geoPath().projection(map2dProjection))
         .style('stroke', '#000');
 
+    // Add title
+    g.append('text')
+         .attr('class', 'map-2d')
+         .attr('x', 30)
+         .attr('y', 30)
+         .text('Solar Energy');
+
     // Draw Circles
     g.append('g')
         .attr('class', 'map-2d')
@@ -34,6 +65,7 @@ export function plot_map_2d(data, g) {
         .data(data['solar_generation'])
         .enter()
         .append('circle')
+        .attr('class', 'solar')
         .attr('fill-opacity', 0.5)
         .attr('r', function(d) {
             if (d.year == mapYear) {

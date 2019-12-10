@@ -438,7 +438,8 @@ renewables_generation_df <- process_space_time_data(renewables_generation, x_sta
 
 # Tidy data
 renewables_generation_df <- renewables_generation_df %>%
-  gather()
+  gather(key = "country", value = "generation", -year)
 
-
+# Write to CSV 
+write.csv(renewables_generation_df,'renewables_generation.csv', row.names = TRUE)
 ```

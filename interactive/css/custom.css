@@ -81,6 +81,7 @@ body {
     height: 40rem;
     animation: ray_anim 60s linear infinite;
     opacity: inherit;
+    pointer-events: none;
 }
 
 @keyframes ray_anim {
@@ -104,6 +105,7 @@ body {
     left: 20vw;
     opacity: inherit;
     z-index: 0;
+    pointer-events: none;
 }
 
 [class^='cloud-'] {

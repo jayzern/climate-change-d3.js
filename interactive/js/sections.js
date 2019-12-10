@@ -360,6 +360,12 @@ var scrollVis = function() {
         d3.selectAll('.dot')
             .attr('cy', 0)
             .style('opacity', 0);
+
+        d3.select('#top_countries_ratio')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
 
     function showTopCountries() {
@@ -368,6 +374,12 @@ var scrollVis = function() {
             .transition()
             .duration(600)
             .style('opacity', 0);
+
+        d3.select('#top_countries_ratio')
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         d3.select('#top_countries_ratio')
             .transition()

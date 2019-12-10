@@ -117,9 +117,9 @@ var scrollVis = function() {
     var setupSections = function() {
         // activateFunctions are called each
         // time the active section changes
-        activateFunctions[0] = showMap2d;
-        activateFunctions[1] = showRedRect;
-        activateFunctions[2] = showGreenRect;
+        activateFunctions[0] = showMapHydro;
+        activateFunctions[1] = showMapWind;
+        activateFunctions[2] = showMapSolar;
         activateFunctions[3] = showTopCountries;
 
         // updateFunctions are called while
@@ -147,52 +147,61 @@ var scrollVis = function() {
      * user may be scrolling up or down).
      *
      */
-    function showMap2d() {
-        // Set first graph to be visible
-        g.selectAll('.map-2d')
-            .transition()
-            .duration(600)
-            .attr('opacity', 1);
 
-        // Set next graph to be invisible when scroll back up
-        g.selectAll('.red-rect')
+    function showMapHydro() {
+        g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-hydro circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-wind circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
     }
 
-    function showRedRect() {
-        // Set previous graph to be invisible
-        g.selectAll('.map-2d')
+    function showMapWind() {
+        g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 0);
 
-        // Set next graph to be invisible
-        g.selectAll('.green-rect')
+        g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 1);
 
-        // Set current graph to be visible
-        g.selectAll('.red-rect')
+        g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
-            .attr('opacity', 1);
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-solar circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
     }
 
-    function showGreenRect() {
-        // Set previous graph to be invisible
-        g.selectAll('.red-rect')
+    function showMapSolar() {
+        g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 0);
 
-        // Set current graph to be visible
-        g.selectAll('.green-rect')
+        g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .attr('opacity', 1);
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-solar circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
 
         d3.select('#top_countries_ratio')
             .transition()
@@ -205,10 +214,11 @@ var scrollVis = function() {
     }
 
     function showTopCountries() {
-        g.selectAll('.green-rect')
+        // Set Jay's section to 0
+        g.selectAll('#map-2d')
             .transition()
             .duration(600)
-            .attr('opacity', 0);
+            .style('opacity', 0);
 
         d3.select('#top_countries_ratio')
             .transition()

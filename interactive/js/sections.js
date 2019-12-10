@@ -5,7 +5,11 @@
  * http://bost.ocks.org/mike/chart/
  */
 
-import { plot_line_temp, plot_line_co2, plot_line_co2_ratio } from './line_animations.js';
+import {
+    plot_line_temp,
+    plot_line_co2,
+    plot_line_co2_ratio
+} from './line_animations.js';
 import { plot_top_countries } from './top_countries.js';
 import { plot_map_2d } from './map_2d.js';
 
@@ -112,14 +116,13 @@ var scrollVis = function() {
     var setupSections = function() {
         // activateFunctions are called each
         // time the active section changes
-        activateFunctions[0] = showTempLine; 
+        activateFunctions[0] = showTempLine;
         activateFunctions[1] = showCO2Line;
         activateFunctions[2] = showCO2RatioLine;
         activateFunctions[3] = showMapHydro;
         activateFunctions[4] = showMapWind;
         activateFunctions[5] = showMapSolar;
         activateFunctions[6] = showTopCountries;
-
 
         // updateFunctions are called while
         // in a particular section to update
@@ -150,39 +153,40 @@ var scrollVis = function() {
     function showTempLine() {
         // Set first graph to be visible
         g.selectAll('.temp_plot')
-       .transition()
+            .transition()
             .duration(600)
             .style('opacity', 1);
-      
+
         var path = g.select('#temp_path');
         var pathlength = path.node().getTotalLength();
-        var transitionPath = d3.transition()
+        var transitionPath = d3
+            .transition()
             .ease(d3.easeExp)
             .duration(4000);
-        path.attr("stroke-dashoffset", pathlength);
+        path.attr('stroke-dashoffset', pathlength);
         path.transition(transitionPath)
-            .attr("stroke", "darkred")
-            .attr("stroke-dashoffset", 0);
+            .attr('stroke', 'darkred')
+            .attr('stroke-dashoffset', 0);
 
         // Retransitioning of Text
         g.select('#temp_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
             .transition()
-            .ease(d3.easeExp,100)
+            .ease(d3.easeExp, 100)
             .duration(7000)
-            .style("opacity","1");
+            .style('opacity', '1');
 
         // Set next graph to be invisible when scroll back up
         g.selectAll('.co2_plot')
-          .transition()
-          .duration(600)
-          .style('opacity', 0);
+            .transition()
+            .duration(600)
+            .style('opacity', 0);
     }
-  
+
     function showCO2Line() {
         // Set previous graph to be invisible
         g.selectAll('.temp_plot')
-          .transition()
+            .transition()
             .duration(600)
             .style('opacity', 0);
 
@@ -194,20 +198,20 @@ var scrollVis = function() {
 
         var path = g.select('#co2_path');
         var pathlength = path.node().getTotalLength();
-        var transitionPath = d3.transition()
+        var transitionPath = d3
+            .transition()
             .ease(d3.easeExp)
             .duration(4000);
-        path.attr("stroke-dashoffset", pathlength);
-        path.transition(transitionPath)
-            .attr("stroke-dashoffset", 0);
+        path.attr('stroke-dashoffset', pathlength);
+        path.transition(transitionPath).attr('stroke-dashoffset', 0);
 
         // Retransitioning of Text
         g.select('#co2_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
             .transition()
-            .ease(d3.easeExp,100)
+            .ease(d3.easeExp, 100)
             .duration(7000)
-            .style("opacity","1");
+            .style('opacity', '1');
 
         // Set next graph to be invisible
         g.selectAll('.co2_ratio_plot')
@@ -215,7 +219,7 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 0);
     }
-  
+
     function showCO2RatioLine() {
         // Set previous graph to be invisible
         g.selectAll('.co2_plot')
@@ -232,38 +236,38 @@ var scrollVis = function() {
         // Retransitioning of Line Graph
         var path = g.select('#co2_ratio_path');
         var pathlength = path.node().getTotalLength();
-        var transitionPath = d3.transition()
+        var transitionPath = d3
+            .transition()
             .ease(d3.easeExp)
             .duration(4000);
-        path.attr("stroke-dashoffset", pathlength);
-        path.transition(transitionPath)
-            .attr("stroke-dashoffset", 0);
+        path.attr('stroke-dashoffset', pathlength);
+        path.transition(transitionPath).attr('stroke-dashoffset', 0);
 
         // Retransitioning of Text
         g.select('#co2_ratio_path_text')
-            .style("opacity","0")
+            .style('opacity', '0')
             .transition()
-            .ease(d3.easeExp,100)
+            .ease(d3.easeExp, 100)
             .duration(7000)
-            .style("opacity","1");
+            .style('opacity', '1');
 
         // Set next graph to be invisible
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
             .style('opacity', 0);
-        
+
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
             .style('opacity', 0);
     }
-      
+
     function showMapHydro() {
         g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)
-            .style('opacity',0);
+            .style('opacity', 0);
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
@@ -277,7 +281,6 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 0);
     }
-
 
     function showMapWind() {
         g.selectAll('.map-2d-hydro circle')
@@ -320,7 +323,8 @@ var scrollVis = function() {
         d3.select('#top_countries_ratio')
             .transition()
             .duration(600)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
 
         d3.selectAll('.dot')
             .attr('cy', 0)
@@ -337,8 +341,10 @@ var scrollVis = function() {
         d3.select('#top_countries_ratio')
             .transition()
             .duration(600)
-            .style('opacity', 1);
-        show_top_countries();
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+
+        show_top_countries(); // top countries transition
     }
 
     /**
@@ -465,7 +471,7 @@ d3.queue()
         carbon_generation,
         renewables_generation,
         top_countries_ratios,
-        region_map,
+        region_map
     ) {
         if (error) {
             console.error('Oh dear, something went wrong: ' + error);

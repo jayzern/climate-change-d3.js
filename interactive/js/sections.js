@@ -5,6 +5,7 @@
  * http://bost.ocks.org/mike/chart/
  */
 
+import { plot_dry_earth, plot_rich_earth } from './earth.js';
 import { plot_line_temp, plot_line_co2, plot_line_co2_ratio } from './line_animations.js';
 import { plot_top_countries } from './top_countries.js';
 import { plot_map_2d } from './map_2d.js';
@@ -72,16 +73,21 @@ var scrollVis = function() {
         });
     };
 
+    var show_dry_earth;
     var show_line_temp;
     var show_line_co2;
     var show_line_co2_ratio;
     var show_top_countries;
     var show_map_2d;
+    var show_rich_earth;
     /**
      * setupVis - creates initial elements for all
      * sections of the visualization.
      */
     var setupVis = function(data) {
+        // Show the dry earth
+        show_dry_earth = plot_dry_earth(g);
+
         // Show Animated Line Plot with Temperature
         show_line_temp = plot_line_temp(data, g);
 
@@ -95,11 +101,12 @@ var scrollVis = function() {
         show_map_2d = plot_map_2d(data, g);
 
         // Top Countries Plot
-
         show_top_countries = plot_top_countries(
             data['top_countries_ratios'],
-            data['region_map']
-        );
+            data['region_map']);
+
+        // Show the rich earth
+        show_rich_earth = plot_rich_earth(g);
     };
 
     /**
@@ -112,13 +119,15 @@ var scrollVis = function() {
     var setupSections = function() {
         // activateFunctions are called each
         // time the active section changes
-        activateFunctions[0] = showTempLine; 
-        activateFunctions[1] = showCO2Line;
-        activateFunctions[2] = showCO2RatioLine;
-        activateFunctions[3] = showMapHydro;
-        activateFunctions[4] = showMapWind;
-        activateFunctions[5] = showMapSolar;
-        activateFunctions[6] = showTopCountries;
+        activateFunctions[0] = showDryEarth; 
+        activateFunctions[1] = showTempLine;
+        activateFunctions[2] = showCO2Line;
+        activateFunctions[3] = showCO2RatioLine;
+        activateFunctions[4] = showMapHydro;
+        activateFunctions[5] = showMapWind;
+        activateFunctions[6] = showMapSolar; 
+        activateFunctions[7] = showTopCountries;
+        activateFunctions[8] = showRichEarth;
 
 
         // updateFunctions are called while
@@ -127,7 +136,7 @@ var scrollVis = function() {
         // Most sections do not need to be updated
         // for all scrolling and so are set to
         // no-op functions.
-        for (var i = 0; i < 7; i++) {
+        for (var i = 0; i < 9; i++) {
             updateFunctions[i] = function() {};
         }
     };
@@ -146,8 +155,34 @@ var scrollVis = function() {
      * user may be scrolling up or down).
      *
      */
+    function showDryEarth() {
+        g.selectAll('.dry_earth')
+        .transition()
+        .duration(600)
+        .style('opacity', 1)
+
+        g.selectAll('.segment_dry')
+          .transition()
+          .duration(600)
+          .style('opacity', 0.6);
+
+        g.selectAll('.graticule_dry')
+          .transition()
+          .duration(600)
+          .style('opacity',1);
+        
+        g.selectAll('.temp_plot')
+          .transition()
+          .duration(600)
+          .style('opacity', 0);
+    }
 
     function showTempLine() {
+        g.selectAll('.dry_earth')
+        .transition()
+        .duration(600)
+        .style('opacity', 0);
+
         // Set first graph to be visible
         g.selectAll('.temp_plot')
        .transition()
@@ -339,6 +374,47 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 1);
         show_top_countries();
+
+        g.selectAll('.rich_earth')
+        .transition()
+        .duration(600)
+        .style('opacity',0);
+
+        g.selectAll('.segment_rich')
+          .transition()
+          .duration(600)
+          .style('opacity', 0);
+
+        g.selectAll('.graticule_rich')
+          .transition()
+          .duration(600)
+          .style('opacity',0);
+    }
+
+    function showRichEarth() {
+        g.selectAll('.rich_earth')
+        .transition()
+        .duration(600)
+        .style('opacity', 1)
+
+        g.selectAll('.segment_rich')
+          .transition()
+          .duration(600)
+          .style('opacity', 0.6);
+
+        g.selectAll('.graticule_rich')
+          .transition()
+          .duration(600)
+          .style('opacity',1);
+        
+        g.selectAll('#top_countries_ratio')
+          .transition()
+          .duration(600)
+          .style('opacity', 0);
+
+        d3.selectAll('.dot')
+            .attr('cy', 0)
+            .style('opacity', 0);
     }
 
     /**

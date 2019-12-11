@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title>Renewable Gamechangers</title>
+        <link rel="stylesheet" type="text/css" href="css/bootstrap.min.css" />
+        <link rel="stylesheet" type="text/css" href="css/style.css" />
+        <link rel="stylesheet" type="text/css" href="css/custom.css" />
+        <link rel="shortcut icon" href="/images/favicon.ico" type="image/x-icon"> 
+        <link rel="icon" href="/images/favicon.ico" type="image/x-icon">
+    </head>
+    <body>
+        <div class="container">
+            <div id="graphic">
+                <div id="sections">
+                    <section class="step">
+                        <div class="title">Is our planet green? </div>
+                    </section>
+                    <section class="step">
+                        <div class="title">Climate Change is becoming a bigger concern.</div>
+                    </section>
+                    <section class="step">
+                        <div class="title">Increasing emissions of CO2 is likely to be causing climate change.</div>
+                    </section>
+                    <section class="step">
+                        <div class="title">But Total CO2 Emission Rate is actually decreasing.</div>
+                        CO2 Emission Rate = <br> CO2 Emission/Energy Consumed
+                    </section>
+                    <!--<section class="step">
+                        <div class="title">Renewable Energy Production is increasing in the world.</div>
+                    </section>-->
+                    <section class="step">
+                        <div class="title">Carbon Emissions in the World</div>
+                        The US has contributed the most CO2 (in million tonnes) in 2004, until it was exceeded by China in 2005.
+                        CO2 emissions in the US has been consistent throughout, while emissions in China has been growing exponentially.
+                    </section>
+                    <section class="step">
+                        <div class="title">Total Renewable Energy in the World</div>
+                        Total Renewable Energy = Hydro + Wind + Solar + Others (Biomass, Biofuels).
+                        <br/>
+                        Europe, US and China are the biggest contributors.
+                    </section>
+                    <section class="step">
+                        <div class="rain front-row"></div>
+                        <div class="title">Hydro Energy Production in the World</div>
+                        China has been focusing on increasing Hydroelectric energy generation.
+                        Other countries have not experienced the same growth.
+                    </section>
+                    <section class="step">
+                        <div class="clouds">
+                            <img class="cloud-1" src="images/cloud.svg"></img>
+                            <img class="cloud-2" src="images/cloud.svg"></img>
+                            <img class="cloud-3" src="images/cloud.svg"></img>
+                            <img class="cloud-4" src="images/cloud.svg"></img>
+                        </div>
+                        <div class="title">Wind Energy Production in the World</div>
+                        Wind energy is relatively new type of renewable energy that has gained traction since 2010.
+                    </section>
+                    <section class="step">
+                        <img id="sun" src="images/sun.svg" />
+                        <div class="title">Solar Energy Production in the World</div>
+                        Like Wind energy, Solar is also relatively new. China, US and Japan are the top contributors of Solar energy generation.
+                    </section>
+                    <section class="step">
+                        <div class="title">Renewable Energy Ratio Country Ranking</div>
+                    </section>
+                    <section class="step">
+                        <div class="title">Our planet is becoming greener!</div>
+                    </section>
+                </div>
+                <div id="vis"></div>
+                <div id="extra-space"></div>
+            </div>
+        </div>
+
+        <!-- Add Slider -->
+        <script src="https://unpkg.com/d3-simple-slider"></script>
+
+        <!-- Open d3 Geo -->
+        <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+        <script src="https://d3js.org/d3-geo-projection.v2.min.js"></script>
+
+        <!-- Open d3 v4 -->
+        <script src="lib/d3.js"></script>
+        <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+        <script src="js/scroller.js"></script>
+        <script src="js/sections.js" type="module"></script>
+        <script src="js/rain.js"></script>
+
+        <!-- Open topo -->
+        <script src="https://d3js.org/topojson.v1.min.js"></script>
+    </body>
+</html>

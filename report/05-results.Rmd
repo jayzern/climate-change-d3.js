@@ -149,13 +149,19 @@ primary_energy_consumption_df <- primary_energy_consumption[5:87,] %>%
   add_column(continent = continents) %>%
   mutate_at(c('oil', 'natural_gas', 'coal', 'nuclear_energy', 'hydro_electric', 'renewables'), funs(as.numeric)) %>% 
   select(country, oil, natural_gas, coal, nuclear_energy, hydro_electric, renewables, continent)
+
+# Add hydro into renewables
+primary_energy_consumption_df['renewables'] <- primary_energy_consumption_df['renewables'] + primary_energy_consumption_df['hydro_electric']
+
+# Drop column hydro
+primary_energy_consumption_df <- primary_energy_consumption_df %>% select (-c(hydro_electric))
 ```
 
-Focusing on continents, we look at 6 main sources of energy: natural gas, coal, nuclear, hydro electric and renewables, measured in **Million tonnes of oil equivalent (Mtoe)** in **2018** as a PCP chart using the GGally package. Each line is colored by their continents on the right, and the corresponding countries are listed on the left. The main trends are as follows:
+Focusing on continents, we look at 5 main sources of energy: natural gas, coal, nuclear and renewables, measured in **Million tonnes of oil equivalent (Mtoe)** in **2018** as a PCP chart using the GGally package. Each line is colored by their continents on the right, and the corresponding countries are listed on the left. The main trends are as follows:
 
 1. European countries tend to rely less on oil, natural gas and coal (non-renewebles) compared to counterpart countries in asia pacific and north america.
-2. African, Middle Eastern, Central American and CIS (Commonwealth of Independent States) countries generates the least energy across all spectrums of energy sources, with the exception of countries such as Brazil relying on hydro electric and Russia relying on natural gas.
-3. North america, mainly the US, generates the most energy across oil, natural gas and nuclear energy. The only country that matches the US in terms of volume is China, which generates the most energy across coal, hydro electric and renewables.
+2. African, Middle Eastern, Central American and CIS (Commonwealth of Independent States) countries generates the least energy across all spectrums of energy sources, with the exception of countries such as Brazil relying on renewables and Russia relying on natural gas.
+3. North america, mainly the US, generates the most energy across oil, natural gas and nuclear energy. The only country that matches the US in terms of volume is China, which generates the most energy across coal and renewables.
 
 ```{r, include=TRUE}
 parcoords::parcoords(primary_energy_consumption_df,
@@ -213,9 +219,9 @@ left_label <- renewables_generation_df %>%
         slice(2)
 ```
 
-Renewable energy = Solar + Wind + Others (Biomass, Biofuels). 
+Renewable energy = Solar + Wind + Others (Hydro, Biomass, Biofuels). 
 
-Both the largest proportion and fastest growing source of renewable energy is Solar and Wind energy. Focusing on these two, we measure how countries performed in 2018 using a cleveland dot plot on Countries versus Energy Generation (Terawatt Hours), faceted on their Continents.
+One of the largest proportions and fastest growing sources of renewable energy is Solar and Wind. Focusing on these two, we measure how countries performed in 2018 using a cleveland dot plot on Countries versus Energy Generation (Terawatt Hours), faceted on their Continents.
 
 The main trends are that Europe as a whole tends to rely on Solar/Wind energy consistently; whilst individual countries such as US, China, Brazil, Germany, Japan have contributed the most Solar/Wind energy by a large margin compared to the rest in their corresponding Continents. Japan is the only country that has a higher generation of Solar energy as compared to Wind energy by a relatively large margin.
 

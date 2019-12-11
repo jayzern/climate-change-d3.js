@@ -64,11 +64,177 @@ ggplot(df, aes(x=renew_ratio, y=emission_ratio)) +
 Additionally the large number of points on the left side of the plot is likely the result of countrys' having a low renewable ratio. These countries with low renewable ratios likely won't see a impact on their emissions as a result of renewables because of the low amount of renewable energy. As a result, there isn't a relationship between renewables and emissions when renewables is close to zero, so the emissions ratios for these low renewable energy countries varies widely. However, when moving toward higher renewable ratios, the downward trends begins appearing.
 
 
+## Why did CO2 emissions in China grow?
+
+```{r, include = FALSE}
+carbon_dioxide_emissions <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", col_names = FALSE, sheet="Carbon Dioxide Emissions")
+
+# Set the column names
+colnames(carbon_dioxide_emissions) <- carbon_dioxide_emissions[3,]
+
+# Data Processing
+china_df <- carbon_dioxide_emissions[5:107, 1:55] %>%
+  rename(country = `Million tonnes of carbon dioxide`) %>%
+  drop_na() %>%
+  filter(!str_detect(country, "Other")) %>%
+  filter(!str_detect(country, "Total")) %>%
+  filter(country == "China")
+
+# Tranpose
+china_df <- china_df %>% 
+    rownames_to_column %>%
+    gather(variable, value, -rowname) %>% 
+    spread(rowname, value)
+
+# Rename
+colnames(china_df) <- tail(china_df, 1)
+
+# Delete last row, mutate values, gather
+china_df <-china_df[-55,] %>%
+  rename(time = country) %>%
+  mutate_at(c('time', 'China'), funs(as.numeric))
+
+china_df
+
+# Findings
+# 1) CO2 produced mainly by coal factories
+# 2) Seems like Renewables and Nuclear actually help reduce C02 by relying less on coal
+
+# Super relevant article: https://www.carbonbrief.org/guest-post-chinas-co2-emissions-grew-slower-than-expected-in-2018
+```
+
+Main Events:
+
+1. China joins the World Trade Organization, giving rise to higher demand in exports and higher consumption in coal energy to keep up with global productions, causing CO2 to rise.
+
+2. Around 2014, China expands into more renewable energy and nuclear power; reducing demand for coal factories and causing CO2 to fall.
+
+3. Around 2017, higher demand for exports caused coal consumption to increase and surpass renewables, causing CO2 to rise.
+
+Increasing Renewables => Reduces demand for Coal => Reduces CO2 emissions.
+
+Source:
+[https://www.carbonbrief.org/guest-post-chinas-co2-emissions-grew-slower-than-expected-in-2018](https://www.carbonbrief.org/guest-post-chinas-co2-emissions-grew-slower-than-expected-in-2018)
+
+```{r}
+china_df %>%
+  ggplot(aes(time, China,)) +
+    geom_line(color="darkred", size=1) + 
+    geom_vline(xintercept = 2001) +
+    geom_vline(xintercept = 2013) +
+    geom_vline(xintercept = 2016) +
+    annotate("text", x = 1998, y = 8000, label = "Event 1") + 
+    annotate("text", x = 2010, y =6000, label = "Event 2") +
+    annotate("text", x = 2018.8, y =4000, label = "Event 3") +
+    ggtitle("Total CO2 Emissions 1965-2018 in China") +
+    labs(x = "Year", y = "CO2 Emissions (millions of tonnes)") 
+```
 
 
+## Energy Sources by Continents
 
+```{r, include=FALSE}
+# Parallel Coordinate Plots on Primary Energy consumption by fuel
+library(GGally)
+primary_energy_consumption <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", col_names = FALSE, sheet="Primary Energy - Cons by fuel")
 
+# Add continents
+continents <- c(rep("north_america", 3), rep("central_america", 8), rep("europe", 20), rep("CIS", 6), rep("middle_east", 8), rep("africa", 4), rep("asia_pacific", 17))
 
+# Data processing
+primary_energy_consumption_df <- primary_energy_consumption[5:87,] %>%
+  rename(country = `...1` , oil = `...9`, natural_gas = `...10`, coal = `...11`, nuclear_energy = `...12`, hydro_electric = `...13`, renewables = `...14`) %>%
+  filter(!str_detect(country, "Other")) %>%
+  filter(!str_detect(country, "Total")) %>%
+  add_column(continent = continents) %>%
+  mutate_at(c('oil', 'natural_gas', 'coal', 'nuclear_energy', 'hydro_electric', 'renewables'), funs(as.numeric)) %>% 
+  select(country, oil, natural_gas, coal, nuclear_energy, hydro_electric, renewables, continent)
+```
+
+Focusing on continents, we look at 6 main sources of energy: natural gas, coal, nuclear, hydro electric and renewables, measured in **Million tonnes of oil equivalent (Mtoe)** in **2018** as a PCP chart using the GGally package. Each line is colored by their continents on the right, and the corresponding countries are listed on the left. The main trends are as follows:
+
+1. European countries tend to rely less on oil, natural gas and coal (non-renewebles) compared to counterpart countries in asia pacific and north america.
+2. African, Middle Eastern, Central American and CIS (Commonwealth of Independent States) countries generates the least energy across all spectrums of energy sources, with the exception of countries such as Brazil relying on hydro electric and Russia relying on natural gas.
+3. North america, mainly the US, generates the most energy across oil, natural gas and nuclear energy. The only country that matches the US in terms of volume is China, which generates the most energy across coal, hydro electric and renewables.
+
+```{r, include=TRUE}
+parcoords::parcoords(primary_energy_consumption_df,
+  rownames = FALSE,
+  alpha = 0.5,
+  brushMode = "1D-axes-multi",
+  color = list(colorScale = "scaleOrdinal",
+               colorBy = "continent",
+               colorScheme = "schemeCategory10"),
+  height=600,
+  width=800,
+  withD3 = TRUE)
+```
+
+## A Closer Look at Solar and Wind Energy
+
+```{r, include=FALSE}
+# Cleveland dot plot on renewable energy Faceted by regions
+library(tidyverse)
+library(readxl)
+
+renewables_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Renewables Generation by source")
+
+# Add continents
+continents <- c(rep("N.A.", 3), rep("C.America", 8), rep("Europe", 20), rep("CIS", 6), rep("Middle East", 8), rep("Africa", 4), rep("Asia Pacific", 17))
+
+# Data processing
+renewables_generation_df <- renewables_generation[4:86,] %>%
+  rename(country = `Renewable Energy: Generation by source*`, wind_2017 = `...2`, solar_2017 = `...3`, wind = `...6`, solar = `...7`, wind_growth = `...10`, solar_growth = `...11`) %>%
+  filter(!str_detect(country, "Other")) %>%
+  filter(!str_detect(country, "Total")) %>%
+  add_column(continent = continents) %>%
+  mutate_at(c('wind_2017', 'solar_2017', 'wind', 'solar', 'wind_growth', 'solar_growth'), funs(as.numeric)) %>%
+  gather('wind', 'solar', key = "energy_type", value = "generation")
+
+# create a theme for dot plots, which can be reused
+theme_dotplot <- theme_bw(14) +
+    theme(axis.text.y = element_text(size = rel(.75)),
+        axis.ticks.y = element_blank(),
+        axis.title.x = element_text(size = rel(.75)),
+        panel.grid.major.x = element_blank(),
+        panel.grid.major.y = element_line(size = 0.5),
+        panel.grid.minor.x = element_blank(),
+        legend.position = "bottom")
+
+# Create labels
+right_label <- renewables_generation_df %>%
+        group_by(country) %>%
+        arrange(desc(generation)) %>%
+        top_n(1)
+
+left_label <- renewables_generation_df %>%
+        group_by(country) %>%
+        arrange(desc(generation)) %>%
+        slice(2)
+```
+
+Renewable energy = Solar + Wind + Others (Biomass, Biofuels). 
+
+Both the largest proportion and fastest growing source of renewable energy is Solar and Wind energy. Focusing on these two, we measure how countries performed in 2018 using a cleveland dot plot on Countries versus Energy Generation (Terawatt Hours), faceted on their Continents.
+
+The main trends are that Europe as a whole tends to rely on Solar/Wind energy consistently; whilst individual countries such as US, China, Brazil, Germany, Japan have contributed the most Solar/Wind energy by a large margin compared to the rest in their corresponding Continents. Japan is the only country that has a higher generation of Solar energy as compared to Wind energy by a relatively large margin.
+
+```{r, fig.height = 10, fig.width = 10}
+
+# Plot cleveland
+ggplot(renewables_generation_df, aes(x = generation, y = reorder(country, generation))) +
+    geom_line(aes(group = country)) +
+    geom_point(aes(color = energy_type)) +
+    facet_grid(continent ~ ., scales = "free", space = "free") +
+    geom_text(data = right_label, aes(color = energy_type, label = round(generation, 0)), size = 3, hjust = -.5) +
+    geom_text(data = left_label, aes(color = energy_type, label = round(generation, 0)), size = 3, hjust = 1.5) +
+    labs(title = "Solar and Wind energy across Countries and Continents in 2018", subtitle="Source: BP Statistical Review of World Energy 2019") +
+    ylab("") +
+    xlab("Energy generation in Terawatt hours (TWh)") + 
+    xlim(0, 400) +
+    theme_dotplot
+
+```
 
 
 

@@ -18,13 +18,13 @@ export function plot_dry_earth(g){
             const path = d3.geoPath().projection(projection);
             const center = [width/2, height/2];
 
-            drawGlobe();    
+            drawGlobe();
             drawGraticule();
-            enableRotation();    
+            enableRotation();
 
-            function drawGlobe() {  
+            function drawGlobe() {
                 d3.queue()
-                    .defer(d3.json, 'https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json')          
+                    .defer(d3.json, 'https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json')
                     .await((error, worldData) => {
                         svg.selectAll(".segment_dry")
                             .data(topojson.feature(worldData, worldData.objects.countries).features)
@@ -57,7 +57,7 @@ export function plot_dry_earth(g){
                     projection.rotate([config.speed * elapsed - 120, config.verticalTilt, config.horizontalTilt]);
                     svg.selectAll("path").attr("d", path);
                 });
-            }        
+            }
 
 }
 
@@ -71,20 +71,25 @@ export function plot_rich_earth(g){
             }
             let locations = [];
             const svg = g.append('svg').attr('class','rich_earth')
-                .attr('width', width).attr('height', height);
+                .attr('width', width).attr('height', height)
+                .style('pointer-events', 'none'); // Jay: added this, otherwise
+                                                  // need to scroll to bottom of
+                                                  // page to activate pointer-events
+                                                  // = none; which affects map2d
+                                                  // tooltip
             const markerGroup = svg.append('g');
             const projection = d3.geoOrthographic();
             const initialScale = projection.scale();
             const path = d3.geoPath().projection(projection);
             const center = [width/2, height/2];
 
-            drawGlobe();    
+            drawGlobe();
             drawGraticule();
-            enableRotation();    
+            enableRotation();
 
-            function drawGlobe() {  
+            function drawGlobe() {
                 d3.queue()
-                    .defer(d3.json, 'https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json')          
+                    .defer(d3.json, 'https://gist.githubusercontent.com/mbostock/4090846/raw/d534aba169207548a8a3d670c9c2cc719ff05c47/world-110m.json')
                     .await((error, worldData) => {
                         svg.selectAll(".segment_rich")
                             .data(topojson.feature(worldData, worldData.objects.countries).features)
@@ -118,6 +123,6 @@ export function plot_rich_earth(g){
                     projection.rotate([config.speed * elapsed - 120, config.verticalTilt, config.horizontalTilt]);
                     svg.selectAll("path").attr("d", path);
                 });
-            }        
+            }
 
 }

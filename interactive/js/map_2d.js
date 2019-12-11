@@ -55,6 +55,7 @@ export function plot_map_2d(data, g) {
         .select('#vis')
         .append('div')
         .attr('class', 'tooltipscatter')
+        .style('pointer-events', 'none')
         .style('opacity', 0);
 
     // Draw 2D map
@@ -83,6 +84,8 @@ export function plot_map_2d(data, g) {
     var initWindData = getMapData('wind_generation', '2018');
     var initHydroData = getMapData('hydro_generation', '2018');
     var initCarbonData = getMapData('carbon_generation', '2018');
+    var initRenewablesData = getMapData('renewables_generation', '2018');
+    console.log(initRenewablesData)
 
     // Draw Circles
     chart.append('g')
@@ -292,7 +295,63 @@ export function plot_map_2d(data, g) {
                 tooltip
                     .html(
                         d.country +
-                        '<br/> Million tonnes of carbon dioxide: <br/>' +
+                        '<br/> Million tonnes of CO2: <br/>' +
+                        parseFloat(d.generation).toFixed(2)
+                    )
+                    .style('top', coords[1] + 'px')
+                    .style('left', coords[0] + 'px')
+                    .style('display', 'block');
+            })
+            .on('mouseout', function(d) {
+                tooltip
+                    .transition()
+                    .duration(500)
+                    .style('opacity', 0);
+            })
+            .style('pointer-events', 'none')
+            .style('opacity', 0);
+
+    chart.append('g')
+        .attr('class', 'map-2d-renewables')
+        .selectAll('circle')
+        .data(initRenewablesData, d => d.country) // Object Constancy map by country
+        .enter()
+        .append('circle')
+            .attr('class', 'carbon')
+            .attr('fill-opacity', 0.5)
+            .attr('r', function(d) {
+                return rScaleMap2dRenewables(d.generation);
+            })
+            .attr('transform', function(d) {
+                try {
+                    return (
+                        'translate(' +
+                        map2dProjection([
+                            +data['geoDict'][d.country].LON,
+                            +data['geoDict'][d.country].LAT
+                        ]) +
+                        ')'
+                    );
+                } catch {
+                  // Do something
+                }
+            })
+            .style('stroke', '#000')
+            .style('fill', 'green')
+            .on('mouseover', function(d, i) {
+                var coords = map2dProjection([
+                    +data['geoDict'][d.country].LON,
+                    +data['geoDict'][d.country].LAT
+                ]);
+                tooltip
+                    .transition()
+                    .duration(200)
+                    .style('opacity', 0.9);
+
+                tooltip
+                    .html(
+                        d.country +
+                        '<br/> Total Renewables (TWh): <br/>' +
                         parseFloat(d.generation).toFixed(2)
                     )
                     .style('top', coords[1] + 'px')
@@ -332,6 +391,7 @@ export function plot_map_2d(data, g) {
                 var newWindData = getMapData('wind_generation', newYear)
                 var newHydroData = getMapData('hydro_generation', newYear)
                 var newCarbonData = getMapData('carbon_generation', newYear)
+                var newRenewablesData = getMapData('renewables_generation', newYear)
 
                 // Update Solar
                 //g.select('.map-2d circle')
@@ -370,6 +430,14 @@ export function plot_map_2d(data, g) {
                         return rScaleMap2dCarbon(d.generation);
                     });
 
+                // Update Renewables
+                g.selectAll('.map-2d-renewables circle')
+                    .data(newRenewablesData, d => d.country)
+                    .transition()
+                    .duration(500)
+                    .attr('r', function(d) {
+                        return rScaleMap2dRenewables(d.generation);
+                    });
 
                 // Then update the current Year
                 mapYear = newYear;

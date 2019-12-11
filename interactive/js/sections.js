@@ -343,10 +343,48 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 1)
             .style('pointer-events', 'all');
+
+        // Set title
+        d3.selectAll('#map-2d')
+          .select('text')
+          .transition()
+          .duration(600)
+          .text('Countries and Emissions in Million Tonnes of CO2');
+
+        g.selectAll('.map-2d-carbon circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+
+        g.selectAll('.map-2d-renewables circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
 
     function showMapRenewables() {
+        g.selectAll('.map-2d-carbon circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+
         g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+
+        // Set title
+        d3.selectAll('#map-2d')
+          .select('text')
+          .transition()
+          .duration(600)
+          .text('Countries and Renewable Energy Generation by Terawatt-hours');
+
+        g.selectAll('.map-2d-renewables circle')
             .transition()
             .duration(600)
             .style('opacity', 1)
@@ -360,23 +398,11 @@ var scrollVis = function() {
     }
 
     function showMapHydro() {
-        // Show current graph
-        g.selectAll('.co2_ratio_plot')
+        g.selectAll('.map-2d-renewables circle')
             .transition()
             .duration(600)
             .style('opacity', 0)
             .style('pointer-events', 'none');
-        // Retransitioning of Text
-        g.select('#co2_ratio_path_text')
-            .style('opacity', '0')
-            .style('pointer-events', 'none');
-
-        // Set title
-        d3.selectAll('#map-2d')
-          .select('text')
-          .transition()
-          .duration(600)
-          .text('Countries and Renewable Energy Generation by Terawatt-hours');
 
         g.selectAll('.map-2d-carbon circle')
             .transition()

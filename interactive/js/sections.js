@@ -346,10 +346,10 @@ var scrollVis = function() {
 
         // Set title
         d3.selectAll('#map-2d')
-          .select('text')
-          .transition()
-          .duration(600)
-          .text('Countries and Emissions in Million Tonnes of CO2');
+            .select('text')
+            .transition()
+            .duration(600)
+            .text('Countries and Emissions in Million Tonnes of CO2');
 
         g.selectAll('.map-2d-carbon circle')
             .transition()
@@ -379,10 +379,12 @@ var scrollVis = function() {
 
         // Set title
         d3.selectAll('#map-2d')
-          .select('text')
-          .transition()
-          .duration(600)
-          .text('Countries and Renewable Energy Generation by Terawatt-hours');
+            .select('text')
+            .transition()
+            .duration(600)
+            .text(
+                'Countries and Renewable Energy Generation by Terawatt-hours'
+            );
 
         g.selectAll('.map-2d-renewables circle')
             .transition()
@@ -664,7 +666,7 @@ d3.queue()
     .defer(d3.csv, 'data/hydro_generation.csv')
     .defer(d3.csv, 'data/carbon_generation.csv')
     .defer(d3.csv, 'data/renewables_generation.csv')
-    .defer(d3.csv, 'data/top_countries_ratio.csv')
+    .defer(d3.csv, 'data/top_countries.csv')
     .defer(d3.csv, 'data/regions_mapping.csv')
     .await(function(
         error,

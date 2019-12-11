@@ -332,6 +332,17 @@ var scrollVis = function() {
 
 
     function showMapHydro() {
+        // Show current graph
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+        // Retransitioning of Text
+        g.select('#co2_ratio_path_text')
+            .style('opacity', '0')
+            .style('pointer-events', 'none');
+
         // Set title
         d3.selectAll('#map-2d')
           .select('text')

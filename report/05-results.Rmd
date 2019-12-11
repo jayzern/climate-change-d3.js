@@ -2,8 +2,9 @@
 
 ```{r setup, include=FALSE}
 library(tidyverse)
-
-df <- read.csv("../preprocessed/usage/processed_analysis.csv")
+library(GGally)
+library(readxl)
+df <- read.csv("../preprocessed/usage/processed.csv")
 ```
 
 ## Emissions and Renewables
@@ -33,7 +34,7 @@ Intuitively, the increase in emissions correlates with the growth of the United 
 
 
 ```{r fig.width=7, fig.height=4}
-ggplot(df[df["country"] == "United States",], aes(x=year, y=emission_ratio)) +
+ggplot(df[df["country"] == "United States",], aes(x=year, y=emission_power_ratio)) +
   geom_line(color="darkgreen", size=1) +
   ggtitle("US CO2 Emissions Ratio 1965-2018") +
   labs(x = "Year", y = "CO2 Emissions Ratio (millions of tonnes/TWh)") 
@@ -42,7 +43,7 @@ ggplot(df[df["country"] == "United States",], aes(x=year, y=emission_ratio)) +
 This plot shows that the United States' emissions ratio (millions of tonnes of CO2 emitted per each TWh generated) has been decreasing throughout time. This decrease implies that the US is becoming more CO2 efficient when generating power and can be due to a variety of factors, such as switching to more renewable energy sources and increaseing the efficiency of both renewable and non-renewable energy generation. We can see the relationship between the decreasing emission ratio and switching to renewable energy sources by plotting the US's renewable ratio, which is the percent of energy consumed that was generated from renewable sources.
 
 ```{r fig.width=7, fig.height=4}
-ggplot(df[df["country"] == "United States",], aes(x=year, y=renew_ratio)) +
+ggplot(df[df["country"] == "United States",], aes(x=year, y=renew_energy_ratio)) +
   geom_line(color="darkblue", size=1) +
   ggtitle("US Renewable Ratio 1965-2018") +
   labs(x = "Year", y = "Renewable Ratio (TWh/TWh)") 
@@ -54,7 +55,7 @@ The sharp increase in the US's renewable energy usage around 2010 seems to match
 Interestingly, this relationship between the renewable ratio and emissions ratio appears not just in the US, but across the globe. The plot below plots each country's yearly emissions ratio versus their renewable ratio. There is a noticeable downward trend in the plot, suggesting that as a country's renewable ratio increases (meaning they switch to more renewable energy sources), their emissions ratio decreases (meaning they release less CO2 per unit power generated).
 
 ```{r fig.width=8, fig.height=5}
-ggplot(df, aes(x=renew_ratio, y=emission_ratio)) +
+ggplot(df, aes(x=renew_energy_ratio, y=emission_power_ratio)) +
   geom_point(color="darkgreen", size=1) +
   ggtitle("Yearly Emissions Ratio vs Renewable Ratio") +
   labs(x = "Renewable Ratio (TWh/TWh)", y = "Emissions Ratio (millions of tonnnes CO2 / TWh)") 
@@ -135,7 +136,7 @@ china_df %>%
 
 ```{r, include=FALSE}
 # Parallel Coordinate Plots on Primary Energy consumption by fuel
-library(GGally)
+
 primary_energy_consumption <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", col_names = FALSE, sheet="Primary Energy - Cons by fuel")
 
 # Add continents
@@ -180,9 +181,6 @@ parcoords::parcoords(primary_energy_consumption_df,
 
 ```{r, include=FALSE}
 # Cleveland dot plot on renewable energy Faceted by regions
-library(tidyverse)
-library(readxl)
-
 renewables_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Renewables Generation by source")
 
 # Add continents

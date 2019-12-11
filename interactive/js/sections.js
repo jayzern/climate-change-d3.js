@@ -128,11 +128,13 @@ var scrollVis = function() {
         activateFunctions[1] = showTempLine;
         activateFunctions[2] = showCO2Line;
         activateFunctions[3] = showCO2RatioLine;
-        activateFunctions[4] = showMapHydro;
-        activateFunctions[5] = showMapWind;
-        activateFunctions[6] = showMapSolar;
-        activateFunctions[7] = showTopCountries;
-        activateFunctions[8] = showRichEarth;
+        activateFunctions[4] = showMapCarbon;
+        activateFunctions[5] = showMapRenewables;
+        activateFunctions[6] = showMapHydro;
+        activateFunctions[7] = showMapWind;
+        activateFunctions[8] = showMapSolar;
+        activateFunctions[9] = showTopCountries;
+        activateFunctions[10] = showRichEarth;
 
         // updateFunctions are called while
         // in a particular section to update
@@ -140,7 +142,7 @@ var scrollVis = function() {
         // Most sections do not need to be updated
         // for all scrolling and so are set to
         // no-op functions.
-        for (var i = 0; i < 9; i++) {
+        for (var i = 0; i < 11; i++) {
             updateFunctions[i] = function() {};
         }
     };
@@ -322,6 +324,33 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 0)
             .style('pointer-events', 'none');
+    }
+
+    function showMapCarbon() {
+        // Show current graph
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+        // Retransitioning of Text
+        g.select('#co2_ratio_path_text')
+            .style('opacity', '0')
+            .style('pointer-events', 'none');
+
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+    }
+
+    function showMapRenewables() {
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
 
         g.selectAll('.map-2d-hydro circle')
             .transition()
@@ -329,7 +358,6 @@ var scrollVis = function() {
             .style('opacity', 0)
             .style('pointer-events', 'none');
     }
-
 
     function showMapHydro() {
         // Show current graph

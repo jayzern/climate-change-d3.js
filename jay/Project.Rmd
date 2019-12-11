@@ -440,6 +440,9 @@ renewables_generation_df <- process_space_time_data(renewables_generation, x_sta
 renewables_generation_df <- renewables_generation_df %>%
   gather(key = "country", value = "generation", -year)
 
+# Add Hydro into renewables
+renewables_generation_df['generation'] <- renewables_generation_df['generation'] + hydro_generation_df['generation']
+
 # Write to CSV 
 write.csv(renewables_generation_df,'renewables_generation.csv', row.names = TRUE)
 ```

@@ -112,13 +112,14 @@ var scrollVis = function() {
     var setupSections = function() {
         // activateFunctions are called each
         // time the active section changes
-        activateFunctions[0] = showTempLine; 
+        activateFunctions[0] = showTempLine;
         activateFunctions[1] = showCO2Line;
         activateFunctions[2] = showCO2RatioLine;
-        activateFunctions[3] = showMapHydro;
-        activateFunctions[4] = showMapWind;
-        activateFunctions[5] = showMapSolar;
-        activateFunctions[6] = showTopCountries;
+        activateFunctions[3] = showMapCarbon;
+        activateFunctions[4] = showMapHydro;
+        activateFunctions[5] = showMapWind;
+        activateFunctions[6] = showMapSolar;
+        activateFunctions[7] = showTopCountries;
 
 
         // updateFunctions are called while
@@ -153,7 +154,7 @@ var scrollVis = function() {
        .transition()
             .duration(600)
             .style('opacity', 1);
-      
+
         var path = g.select('#temp_path');
         var pathlength = path.node().getTotalLength();
         var transitionPath = d3.transition()
@@ -178,7 +179,7 @@ var scrollVis = function() {
           .duration(600)
           .style('opacity', 0);
     }
-  
+
     function showCO2Line() {
         // Set previous graph to be invisible
         g.selectAll('.temp_plot')
@@ -215,7 +216,7 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 0);
     }
-  
+
     function showCO2RatioLine() {
         // Set previous graph to be invisible
         g.selectAll('.co2_plot')
@@ -252,18 +253,59 @@ var scrollVis = function() {
             .transition()
             .duration(600)
             .style('opacity', 0);
-        
-        g.selectAll('.map-2d-hydro circle')
+
+        g.selectAll('.map-2d-carbon circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'none')
             .style('opacity', 0);
     }
-      
-    function showMapHydro() {
+
+    function showMapCarbon() {
+        // Set title
+        d3.selectAll('#map-2d')
+          .select('text')
+          .transition()
+          .duration(600)
+          .text('Countries and Carbon Emissions by Million tonnes of CO2');
+
         g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)
             .style('opacity',0);
+
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-carbon circle')
+            .transition()
+            .duration(600)
+            .style('pointer-events', 'auto')
+            .style('opacity', 1);
+
+        g.selectAll('.map-2d-hydro circle')
+            .transition()
+            .duration(600)
+            .style('pointer-events', 'none')
+            .style('opacity', 0);
+    }
+
+    function showMapHydro() {
+        // Set title
+        d3.selectAll('#map-2d')
+          .select('text')
+          .transition()
+          .duration(600)
+          .text('Countries and Renewable Energy Generation by Terawatt-hours');
+
+        g.selectAll('.map-2d-carbon circle')
+            .transition()
+            .duration(600)
+            .style('pointer-events', 'none')
+            .style('opacity', 0);
+
         g.selectAll('#map-2d')
             .transition()
             .duration(600)
@@ -271,10 +313,13 @@ var scrollVis = function() {
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'auto')
             .style('opacity', 1);
+
         g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'none')
             .style('opacity', 0);
     }
 
@@ -283,6 +328,7 @@ var scrollVis = function() {
         g.selectAll('.map-2d-hydro circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'none')
             .style('opacity', 0);
         g.selectAll('#map-2d')
             .transition()
@@ -292,11 +338,13 @@ var scrollVis = function() {
         g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'auto')
             .style('opacity', 1);
 
         g.selectAll('.map-2d-solar circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'none')
             .style('opacity', 0);
     }
 
@@ -304,6 +352,7 @@ var scrollVis = function() {
         g.selectAll('.map-2d-wind circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'none')
             .style('opacity', 0);
 
         g.selectAll('#map-2d')
@@ -314,6 +363,7 @@ var scrollVis = function() {
         g.selectAll('.map-2d-solar circle')
             .transition()
             .duration(600)
+            .style('pointer-events', 'auto')
             .style('opacity', 1);
 
         // Set next graph to be invisible
@@ -329,6 +379,12 @@ var scrollVis = function() {
 
     function showTopCountries() {
         // Set Jay's section to 0
+        g.selectAll('.map-2d-solar circle')
+            .transition()
+            .duration(600)
+            .style('pointer-events', 'none')
+            .style('opacity', 0);
+
         g.selectAll('#map-2d')
             .transition()
             .duration(600)

@@ -29,7 +29,8 @@ export function plot_top_countries(data, region_map) {
         .append('g')
         .attr('id', 'top_countries_ratio')
         .attr('transform', `translate(${margin.left},100)`)
-        .style('opacity', 0);
+        .style('opacity', 0)
+        .style('pointer-events', 'none');
 
     const grp = chart
         .append('g')
@@ -92,13 +93,12 @@ export function plot_top_countries(data, region_map) {
 
     chart
         .append('g')
-        .attr('pointer-events', 'all')
         .selectAll('dot')
         .data(energy)
         .enter()
         .append('circle')
         .attr('class', 'dot')
-        .attr('pointer-events', 'all')
+        .style('pointer-events', 'none')
         .style('opacity', 0)
         .attr('cx', function(d, i) {
             return xScale(i + 1);
@@ -167,6 +167,7 @@ export function plot_top_countries(data, region_map) {
 
     return function() {
         d3.selectAll('.dot')
+            .style('pointer-events', 'all')
             .transition()
             .delay(function(d, i) {
                 return (countries.length - i) * 20;

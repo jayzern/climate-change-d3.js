@@ -485,7 +485,8 @@ var scrollVis = function() {
 
         d3.selectAll('.dot')
             .attr('cy', 0)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
 
     function showTopCountries() {
@@ -552,7 +553,8 @@ var scrollVis = function() {
 
         d3.selectAll('.dot')
             .attr('cy', 0)
-            .style('opacity', 0);
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
     }
 
     /**

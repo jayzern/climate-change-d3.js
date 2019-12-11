@@ -75,10 +75,10 @@ body {
 /********** START SUN ANIMATION ************/
 #sun {
     position: absolute;
-    left: 45vw;
+    left: -20vw;
     margin: auto;
-    width: 40rem;
-    height: 40rem;
+    width: 30rem;
+    height: 30rem;
     animation: ray_anim 60s linear infinite;
     opacity: inherit;
     pointer-events: none;

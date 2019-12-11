@@ -53,10 +53,10 @@ export function plot_line_temp(data, g){
         .style("fill", "darkred")
         .style("opacity","0")
         .text("Temperature")
-        .transition()
+        /*.transition()
         .ease(d3.easeExp,100)
         .duration(7000)
-        .style("opacity","1");
+        .style("opacity","1");*/
                 
     // Add the X Axis
     gr.append("g")
@@ -159,10 +159,10 @@ export function plot_line_co2(data, g){
         .style("fill", "grey")
         .style("opacity","0")
         .text("CO2 Emissions")
-        .transition()
-        .ease(d3.easeExp,100)
-        .duration(7000)
-        .style("opacity","1");
+        //.transition()
+        //.ease(d3.easeExp,100)
+        //.duration(7000)
+        //.style("opacity","1");
 
      // Add the X Axis
     gr.append("g")
@@ -275,15 +275,16 @@ export function plot_line_co2_ratio(data, g){
                 
     gr.append("text")
         .attr('id', 'co2_ratio_path_text')
-        .attr("transform", `translate(${width-margin.right+10}, ${yScale(last_point[last_point.length-1].annual_emission_rate)})`)
+        .attr("transform", `translate(${width-margin.right+5}, ${yScale(last_point[last_point.length-1].annual_emission_rate)})`)
         .attr("text-anchor", "start")
+        .attr('font-size','12')
         .style("fill", "lightblue")
         .style("opacity","0")
-        .text("CO2 Emissions Rate")
-        .transition()
-        .ease(d3.easeExp,100)
-        .duration(7000)
-        .style("opacity","1");
+        .text("CO2 Emission Rate")
+        //.transition()
+        //.ease(d3.easeExp,100)
+        //.duration(7000)
+        //.style("opacity","1");
 
      // Add the X Axis
     gr.append("g")

@@ -1,1 +1,32 @@
 # Missing values
+```{r setup, include=FALSE}
+library(mi)
+invest_renew_df <- read.csv("preprocessed/invest_to_renewable.csv")
+invest_dev_df <- read.csv("preprocessed/invest_developing_countries.csv")
+
+```
+## Missing Values of Emission Related Data
+
+## Missing Values of Global Trends Related Data
+
+## Missing Values of Finance/Business Related data
+In the following data, there were countries that were dropped from the dataset during the data transformation phase. The data were merged using inner join, for simplicity during the analysis, which automatically removed countries that were not included in both datasets. The specific countries that were dropped during the merge are recorded in detail in the data transformation section for reference. In general, less developed countries from Africa, Asia, Europe, and South America were dropped from the data.
+
+### Missing Values of invest_to_renewable.csv
+```{r}
+invest_renew_df$country
+```
+There are no missing values in this data, but the data only includes 21 relatively developed countries. Therefore, there are many other countries that were not included in this data that need to be considered for a more precise analysis.
+
+### Missing Values of renew_gdp_population.csv, num_business.csv, industrial_production_growth_rate.csv
+There are also no missing values in these data, but as stated above, there were countries that were dropped during the data transformation phase.
+
+### Missing Values of invest_developing_countries.csv 
+The following graph shows the missing data patterns that appeared in the invest_developing_countries.csv data. Note that the value in each column of the data represents the total investment that was made towards a developing country in million USD of that year.
+
+```{r}
+invest_dev_df[1] <- NULL
+visna(invest_dev_df[4:20])
+```
+
+Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This may mean that not tall renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries where there were initial investments, but did not have another round of investments until a later year.

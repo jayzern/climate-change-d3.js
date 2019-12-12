@@ -1,4 +1,7 @@
 # Conclusion
-From our analysis, we discovered that although CO2 emissions were increasing in the World, CO2 emission ratios were decreasing. The decrease in CO2 emission ratios throughtout the world were due to the global trend of renewable energy ratio increasing. Countries with high renewable energy ratio had relatively higher GDP per Capita rather than Total GDP, which hints that the commitment of individuals in each country is important for increasing renewable energy ratios. 
+
+Through our study, we discovered that although CO2 emissions are increasing worldwide, CO2 emission-energy ratios are decreasing. The data suggests that the decrease in CO2 emission-energy ratios throughout the world is related to the global trend of increasing renewable energy usage. We also realized the importance of the distinction between total renewable energy generation and renewable energy ratios. While large countries such as the US and China generate considerable amounts of renewable energy relative to others, this amount is only a fraction of the total energy that they generate. On the other hand, smaller countries such as Iceland and Norway power their countries mainly through renewable sources, but overall generate only a relatively small amount of energy due to their size. 
+
+Additionally, we found that countries with high renewable energy ratios had relatively higher GDP per Capita rather than Total GDP, which hints that the commitment of individuals in each country is important for increasing renewable energy ratios. 
 
 We hope that our analysis and our interactive visualization improved your understanding of the current global situation of renewable energy. Let's continue fighting for a greener planet and a renewable future.

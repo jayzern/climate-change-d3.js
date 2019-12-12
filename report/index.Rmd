@@ -1,5 +1,5 @@
 --- 
-title: "Impact of Renewable Energy"
+title: "Renewable Movements"
 author: "Timothy Huang, Jay Zern Ng, Yuki Nishimura"
 date: "`r Sys.Date()`"
 site: bookdown::bookdown_site

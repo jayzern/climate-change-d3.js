@@ -6,9 +6,9 @@ invest_renew_df <- read.csv("../preprocessed/finance/invest_to_renewable.csv")
 renew_gdp_pop_df <- read.csv("../preprocessed/finance/renew_gdp_population.csv")
 invest_dev_df <- read.csv("../preprocessed/finance/invest_developing_countries.csv")
 ```
-## Missing Values of Emission Related Data
-
 ## Missing Values of Global Trends Related Data
+
+Although the BP Global Trends dataset provides a comprehensive report on renewable energy and emission trends at the country level for the past few decades, it has missing data for certain countries. Most notably, the BP dataset doesn't provide specific country data for African countries. Rather, the BP dataset aggregates these countries into "Western Africa", "Eastern Africa", "Southern Africa", and "Northern Africa". This is also the case with some small Asian Pacific, Caribbean, European, and Middle Eastern countries. Accordingly, there is no country level data for the small countries located in these regions as well as most of Africa.
 
 ```{r, include=FALSE}
 
@@ -16,56 +16,56 @@ process_space_time_data <- function(data, x_start, x_end, y_start, y_end) {
 
   # Replace columns names
   colnames(data) <- data[2,]
-  
+
   # Filter countries only
   data_df <- data[y_start:y_end,x_start:x_end] %>%
     rename(country = colnames(data)[1]) %>%
     drop_na() %>%
     filter(!str_detect(country, "Other")) %>%
     filter(!str_detect(country, "Total"))
-  
+
   # Transpose
-  data_df <- data_df %>% 
+  data_df <- data_df %>%
     rownames_to_column %>%
-    gather(variable, value, -rowname) %>% 
+    gather(variable, value, -rowname) %>%
     spread(rowname, value)
-  
+
   # Rename
-  colnames(data_df) <- tail(data_df, 1) 
-  
+  colnames(data_df) <- tail(data_df, 1)
+
   # Delete last row, rename
   data_df <- data_df[-x_end,] %>%
     mutate_at(vars(-country), funs(as.numeric)) %>%
     rename(year = `country`)
-  
+
   return(data_df)
 }
 
 # Missing data for carbon
 carbon <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Dioxide Emissions")
 carbon_missing_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
-carbon_missing_df <- carbon_missing_df %>% 
+carbon_missing_df <- carbon_missing_df %>%
   gather(-year, key = "country", value = "carbon_emissions") %>%
   mutate(Missing = ifelse(is.na(carbon_emissions), "yes", "no"))
 
 # Data Processing for Hydroelectric
 hydro_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Hydro Generation - TWh")
 hydro_generation_df <- process_space_time_data(hydro_generation, x_start=1, x_end=55, y_start=4, y_end=106)
-hydro_generation_df <- hydro_generation_df %>% 
+hydro_generation_df <- hydro_generation_df %>%
   gather(-year, key = "country", value = "generation") %>%
   mutate(Missing = ifelse(is.na(generation) | generation == 0, "yes", "no"))
 
 # Missing data for wind generation
 wind_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Wind Generation - TWh ")
 wind_generation_df <- process_space_time_data(wind_generation, x_start=1, x_end=55, y_start=4, y_end=108)
-wind_generation_df <- wind_generation_df %>% 
+wind_generation_df <- wind_generation_df %>%
   gather(-year, key = "country", value = "generation") %>%
   mutate(Missing = ifelse(is.na(generation), "yes", "no"))
 
 # Missing data for solar generation
 solar_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
 solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
-solar_generation_df <- solar_generation_df %>% 
+solar_generation_df <- solar_generation_df %>%
   gather(-year, key = "country", value = "generation") %>%
   mutate(Missing = ifelse(is.na(generation), "yes", "no"))
 ```
@@ -113,7 +113,7 @@ There are no missing values in this data, but the data only includes 21 relative
 
 There are also no missing values in these data, but as stated above, there were countries that were dropped during the data transformation phase.
 
-### Missing Values of invest_developing_countries.csv 
+### Missing Values of invest_developing_countries.csv
 The following graph shows the missing data patterns that appeared in the invest_developing_countries.csv data. Note that the value in each column of the data represents the total investment that was made towards a developing country in million USD of that year.
 
 ```{r}
@@ -121,4 +121,4 @@ invest_dev_df[1] <- NULL
 visna(invest_dev_df[4:20])
 ```
 
-Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This may mean that not tall renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries where there were initial investments, but did not have another round of investments until a later year.
+Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This means that not all renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries that had initial investments, but did not have another round of investments until a later year.

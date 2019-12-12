@@ -9,8 +9,8 @@ library(gridExtra)
 library(plotly)
 df <- read.csv("../preprocessed/usage/processed.csv")
 invest_renew_df <- read.csv("../preprocessed/invest_to_renewable.csv")
-renew_gdp_pop_df <- read.csv("preprocessed/renew_gdp_population.csv")
-invest_dev_df <- read.csv("preprocessed/invest_developing_countries.csv")
+renew_gdp_pop_df <- read.csv("../preprocessed/renew_gdp_population.csv")
+invest_dev_df <- read.csv("../preprocessed/invest_developing_countries.csv")
 ```
 
 ## Emissions and Renewables

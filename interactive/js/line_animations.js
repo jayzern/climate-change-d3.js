@@ -1,3 +1,5 @@
+// Code adapted from: https://medium.com/@louisemoxy/create-a-d3-line-chart-animation-336f1cb7dd61
+
 export function plot_line_temp(data, g) {
     // Data from: https://www.ncdc.noaa.gov/monitoring-references/faq/anomalies.php#anomalies
     var width = 600;
@@ -52,8 +54,6 @@ export function plot_line_temp(data, g) {
     path.attr('stroke-dashoffset', pathLength)
         .attr('stroke-dasharray', pathLength)
         .transition(transitionPath);
-    //.attr("stroke", "darkred")
-    //.attr("stroke-dashoffset", 0);
 
     var last_point = data['annual_temp_emissions'];
     // Add label to lines
@@ -69,10 +69,6 @@ export function plot_line_temp(data, g) {
         .style('fill', 'darkred')
         .style('opacity', '0')
         .text('Temperature');
-    /*.transition()
-        .ease(d3.easeExp,100)
-        .duration(7000)
-        .style("opacity","1");*/
 
     // Add the X Axis
     gr.append('g')
@@ -191,8 +187,6 @@ export function plot_line_co2(data, g) {
     path_co2
         .attr('stroke-dashoffset', pathLength)
         .attr('stroke-dasharray', pathLength);
-    //.transition(transitionPath)
-    //.attr("stroke-dashoffset", 0);
 
     var last_point = data['annual_temp_emissions'];
 
@@ -208,10 +202,6 @@ export function plot_line_co2(data, g) {
         .style('fill', 'grey')
         .style('opacity', '0')
         .text('CO2 Emissions');
-    //.transition()
-    //.ease(d3.easeExp,100)
-    //.duration(7000)
-    //.style("opacity","1");
 
     // Add the X Axis
     gr.append('g')
@@ -347,8 +337,6 @@ export function plot_line_co2_ratio(data, g) {
     path_co2_ratio
         .attr('stroke-dashoffset', pathLength)
         .attr('stroke-dasharray', pathLength);
-    //.transition(transitionPath)
-    //.attr("stroke-dashoffset", 0);
 
     var last_point = data['annual_temp_emissions'];
 
@@ -365,10 +353,6 @@ export function plot_line_co2_ratio(data, g) {
         .style('fill', 'lightblue')
         .style('opacity', '0')
         .text('CO2 Emission-Energy Ratio');
-    //.transition()
-    //.ease(d3.easeExp,100)
-    //.duration(7000)
-    //.style("opacity","1");
 
     // Add the X Axis
     gr.append('g')

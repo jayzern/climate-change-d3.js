@@ -1,3 +1,5 @@
+// Code adapted from: https://bl.ocks.org/atanumallick/8d18989cd538c72ae1ead1c3b18d7b54
+
 export function plot_dry_earth(g){
             const width = 600;
             const height = 520;

@@ -260,11 +260,11 @@ We have looked into the global trends of renewable energy production and consump
 The questions we focus on are the below:
 
 **Global Financial Trends of Renewable Energy Usage**  
-- How much are countries investing on renewable energy?
-- How much are countries being invested on for renewable energy?
+- How much are countries investing on renewable energy?  
+- How much are countries being invested on for renewable energy?  
 
 **Global Business Trends of Renewable Energy Usage**  
-- Is there a relationship between the number of companies (headquarters) and renewable energy usage rates?
+- Is there a relationship between the number of companies (headquarters) and renewable energy usage rates?  
 - Is there a relationship between manufacturing (Industrial Production Rate) and renewable energy usage rates?
 
 ### How much are countries investing on renewable energy?

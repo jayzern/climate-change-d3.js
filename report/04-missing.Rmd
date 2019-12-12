@@ -1,9 +1,10 @@
 # Missing values
 ```{r setup, include=FALSE}
 library(mi)
-invest_renew_df <- read.csv("preprocessed/invest_to_renewable.csv")
-invest_dev_df <- read.csv("preprocessed/invest_developing_countries.csv")
-
+library(extracat)
+invest_renew_df <- read.csv("../preprocessed/finance/invest_to_renewable.csv")
+renew_gdp_pop_df <- read.csv("../preprocessed/finance/renew_gdp_population.csv")
+invest_dev_df <- read.csv("../preprocessed/finance/invest_developing_countries.csv")
 ```
 ## Missing Values of Emission Related Data
 
@@ -19,6 +20,7 @@ invest_renew_df$country
 There are no missing values in this data, but the data only includes 21 relatively developed countries. Therefore, there are many other countries that were not included in this data that need to be considered for a more precise analysis.
 
 ### Missing Values of renew_gdp_population.csv, num_business.csv, industrial_production_growth_rate.csv
+
 There are also no missing values in these data, but as stated above, there were countries that were dropped during the data transformation phase.
 
 ### Missing Values of invest_developing_countries.csv 

@@ -5,8 +5,9 @@ Our study involves combining and processing several datasets from different sour
 - [BP’s Statistical Review of World Energy](https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy.html):
 Contains energy data at the country level split by energy sources (oil, gas, coal, nuclear, solar, wind, biofuels, etc) and CO2 emissions data from 1965 to 2018.
 
-- [Thematic Mapping World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php)"
+- [Thematic Mapping World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php)
 Provides shape file polygon data for country borders used for plotting as well as country metadata such as ISO codes, land area, population, etc.
+
 - [UN Region Codelist](https://apps.who.int/gho/data/node.metadata.UNREGION?lang=en):
 Provides mapping for region codes to region names
 

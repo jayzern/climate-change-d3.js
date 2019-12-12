@@ -281,7 +281,7 @@ invest_renew_df$investment_gdp_ratio_2018 <- invest_renew_df$investment_gdp_rati
 ```
 
 
-```{r}
+```{r, fig.height=11}
 investment <- ggplot(invest_renew_df) + 
   aes(x=reorder(country, investment_2018), y=investment_2018, fill=continent) +
   geom_col() + 

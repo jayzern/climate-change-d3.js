@@ -104,13 +104,13 @@ china_df
 # Super relevant article: https://www.carbonbrief.org/guest-post-chinas-co2-emissions-grew-slower-than-expected-in-2018
 ```
 
-Main Events:
+Events:
 
-1. China joins the World Trade Organization, giving rise to higher demand in exports and higher consumption in coal energy to keep up with global productions, causing CO2 to rise.
+1. China joins the World Trade Organization around 2001, giving rise to higher demand in exports and higher consumption in coal energy to keep up with global productions, causing CO2 to rise.
 
-2. Around 2014, China expands into more renewable energy and nuclear power; reducing demand for coal factories and causing CO2 to fall.
+2. In 2014, China expands into more renewable energy and nuclear power; reducing demand for coal factories and causing CO2 to fall.
 
-3. Around 2017, higher demand for exports caused coal consumption to increase and surpass renewables, causing CO2 to rise.
+3. In 2017, higher demand for exports caused coal consumption to increase and surpass renewables, causing CO2 to rise.
 
 Increasing Renewables => Reduces demand for Coal => Reduces CO2 emissions.
 
@@ -122,11 +122,11 @@ china_df %>%
   ggplot(aes(time, China,)) +
     geom_line(color="darkred", size=1) + 
     geom_vline(xintercept = 2001) +
-    geom_vline(xintercept = 2013) +
-    geom_vline(xintercept = 2016) +
+    geom_vline(xintercept = 2014) +
+    geom_vline(xintercept = 2017) +
     annotate("text", x = 1998, y = 8000, label = "Event 1") + 
-    annotate("text", x = 2010, y =6000, label = "Event 2") +
-    annotate("text", x = 2018.8, y =4000, label = "Event 3") +
+    annotate("text", x = 2011, y =6000, label = "Event 2") +
+    annotate("text", x = 2020, y =4000, label = "Event 3") +
     ggtitle("Total CO2 Emissions 1965-2018 in China") +
     labs(x = "Year", y = "CO2 Emissions (millions of tonnes)") 
 ```

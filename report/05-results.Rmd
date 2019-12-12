@@ -281,7 +281,7 @@ invest_renew_df$investment_gdp_ratio_2018 <- invest_renew_df$investment_gdp_rati
 ```
 
 
-```{r fig.width=9, fig.height=4}
+```{r}
 investment <- ggplot(invest_renew_df) + 
   aes(x=reorder(country, investment_2018), y=investment_2018, fill=continent) +
   geom_col() + 
@@ -394,6 +394,7 @@ ggplot(invest_dev_df) +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_colour_brewer(palette="Set3")
 ```
+
 The above line graph consist of countries that had a cumulative invested sum of more than 2,000 Million USD. It seems that from 2000 to 2016, countries from Asia and Africa were invested in highly for renewable energy from around the world. There seems to be a large amount of investment to Pakistan in 2015, making Pakistan the country that was most invested in for renewable energy. Regardless of being a developed country, China is has been invested by other countries for renewable energy. 
 
 ### Is there a relationship between the number of companies (headquarters) and renewable energy ratios?

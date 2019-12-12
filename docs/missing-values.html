@@ -212,7 +212,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>The following graph shows the missing data patterns that appeared in the invest_developing_countries.csv data. Note that the value in each column of the data represents the total investment that was made towards a developing country in million USD of that year.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">invest_dev_df[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
 <a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">visna</span>(invest_dev_df[<span class="dv">4</span><span class="op">:</span><span class="dv">20</span>])</a></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<p><img src="_main_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
 <p>Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This may mean that not tall renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries where there were initial investments, but did not have another round of investments until a later year.</p>
 
 </div>

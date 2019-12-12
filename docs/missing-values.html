@@ -73,7 +73,7 @@ a.sourceLine { text-indent: -1em; padding-left: 1em; }
 pre.numberSource a.sourceLine
   { position: relative; left: -4em; }
 pre.numberSource a.sourceLine::before
-  { content: attr(data-line-number);
+  { content: attr(title);
     position: relative; left: -1em; text-align: right; vertical-align: baseline;
     border: none; pointer-events: all; display: inline-block;
     -webkit-touch-callout: none; -webkit-user-select: none;
@@ -148,10 +148,10 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 </ul></li>
 </ul></li>
 <li class="chapter" data-level="5" data-path="results.html"><a href="results.html"><i class="fa fa-check"></i><b>5</b> Results</a><ul>
-<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#emissions-and-renewables"><i class="fa fa-check"></i><b>5.1</b> Emissions and Renewables</a></li>
-<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#why-did-co2-emissions-in-china-grow"><i class="fa fa-check"></i><b>5.2</b> Why did CO2 emissions in China grow?</a></li>
-<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#energy-sources-by-continents"><i class="fa fa-check"></i><b>5.3</b> Energy Sources by Continents</a></li>
-<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#a-closer-look-at-solar-and-wind-energy"><i class="fa fa-check"></i><b>5.4</b> A Closer Look at Solar and Wind Energy</a></li>
+<li class="chapter" data-level="5.1" data-path="results.html"><a href="results.html#energy-sources-by-continents"><i class="fa fa-check"></i><b>5.1</b> Energy Sources by Continents</a></li>
+<li class="chapter" data-level="5.2" data-path="results.html"><a href="results.html#a-closer-look-at-solar-and-wind-energy"><i class="fa fa-check"></i><b>5.2</b> A Closer Look at Solar and Wind Energy</a></li>
+<li class="chapter" data-level="5.3" data-path="results.html"><a href="results.html#emissions-and-renewables"><i class="fa fa-check"></i><b>5.3</b> Emissions and Renewables</a></li>
+<li class="chapter" data-level="5.4" data-path="results.html"><a href="results.html#why-did-co2-emissions-in-china-grow"><i class="fa fa-check"></i><b>5.4</b> Why did CO2 emissions in China grow?</a></li>
 <li class="chapter" data-level="5.5" data-path="results.html"><a href="results.html#relationship-between-renewable-energy-and-financebusiness-situation-in-countries"><i class="fa fa-check"></i><b>5.5</b> Relationship between Renewable Energy and Finance/Business Situation in Countries</a><ul>
 <li class="chapter" data-level="5.5.1" data-path="results.html"><a href="results.html#how-much-are-countries-investing-on-renewable-energy"><i class="fa fa-check"></i><b>5.5.1</b> How much are countries investing on renewable energy?</a></li>
 <li class="chapter" data-level="5.5.2" data-path="results.html"><a href="results.html#how-much-are-countries-being-invested-on-for-renewable-energy"><i class="fa fa-check"></i><b>5.5.2</b> How much are countries being invested on for renewable energy?</a></li>
@@ -193,7 +193,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <p>In the following data, there were countries that were dropped from the dataset during the data transformation phase. The data were merged using inner join, for simplicity during the analysis, which automatically removed countries that were not included in both datasets. The specific countries that were dropped during the merge are recorded in detail in the data transformation section for reference. In general, less developed countries from Africa, Asia, Europe, and South America were dropped from the data.</p>
 <div id="missing-values-of-invest_to_renewable.csv" class="section level3">
 <h3><span class="header-section-number">4.3.1</span> Missing Values of invest_to_renewable.csv</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1">invest_renew_df<span class="op">$</span>country</a></code></pre></div>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">invest_renew_df<span class="op">$</span>country</a></code></pre></div>
 <pre><code>##  [1] China          United States  Japan          Germany       
 ##  [5] India          United Kingdom Australia      Spain         
 ##  [9] Netherlands    Sweden         France         South Africa  
@@ -210,9 +210,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="missing-values-of-invest_developing_countries.csv" class="section level3">
 <h3><span class="header-section-number">4.3.3</span> Missing Values of invest_developing_countries.csv</h3>
 <p>The following graph shows the missing data patterns that appeared in the invest_developing_countries.csv data. Note that the value in each column of the data represents the total investment that was made towards a developing country in million USD of that year.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1">invest_dev_df[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb3-2" data-line-number="2"><span class="kw">visna</span>(invest_dev_df[<span class="dv">4</span><span class="op">:</span><span class="dv">20</span>])</a></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-46-1.png" width="672" /></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">invest_dev_df[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="kw">visna</span>(invest_dev_df[<span class="dv">4</span><span class="op">:</span><span class="dv">20</span>])</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
 <p>Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This may mean that not tall renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries where there were initial investments, but did not have another round of investments until a later year.</p>
 
 </div>

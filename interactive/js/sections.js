@@ -127,8 +127,8 @@ var scrollVis = function() {
         activateFunctions[0] = showDryEarth;
         activateFunctions[1] = showTempLine;
         activateFunctions[2] = showCO2Line;
-        activateFunctions[3] = showCO2RatioLine;
-        activateFunctions[4] = showMapCarbon;
+        activateFunctions[3] = showMapCarbon;
+        activateFunctions[4] = showCO2RatioLine;
         activateFunctions[5] = showMapRenewables;
         activateFunctions[6] = showMapHydro;
         activateFunctions[7] = showMapWind;
@@ -268,19 +268,20 @@ var scrollVis = function() {
             .style('opacity', '1')
             .style('pointer-events', 'all');
 
-        // Set next graph to be invisible
-        g.selectAll('.co2_ratio_plot')
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'all');
+
+        g.selectAll('.map-2d-carbon circle')
             .transition()
             .duration(600)
             .style('opacity', 0)
             .style('pointer-events', 'none');
-
-        g.select('#co2_ratio_path_text')
-            .style('opacity', '0')
-            .style('pointer-events', 'none');
     }
 
-    function showCO2RatioLine() {
+    function showMapCarbon() {
         // Set previous graph to be invisible
         g.selectAll('.co2_plot')
             .transition()
@@ -290,6 +291,45 @@ var scrollVis = function() {
 
         g.select('#co2_path_text')
             .style('opacity', '0')
+            .style('pointer-events', 'none');
+
+        // Show current graph
+        g.selectAll('.co2_ratio_plot')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
+            .style('pointer-events', 'none');
+
+        // Retransitioning of Text
+        g.select('#co2_ratio_path_text')
+            .style('opacity', '0')
+            .style('pointer-events', 'none');
+
+        g.selectAll('#map-2d')
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+
+        // Set title
+        d3.selectAll('#map-2d')
+            .select('text')
+            .transition()
+            .duration(600)
+            .text('Countries and Emissions in Million Tonnes of CO2');
+
+        g.selectAll('.map-2d-carbon circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 1)
+            .style('pointer-events', 'all');
+    }
+
+    function showCO2RatioLine() {
+        g.selectAll('.map-2d-carbon circle')
+            .transition()
+            .duration(600)
+            .style('opacity', 0)
             .style('pointer-events', 'none');
 
         // Show current graph
@@ -324,38 +364,6 @@ var scrollVis = function() {
             .duration(600)
             .style('opacity', 0)
             .style('pointer-events', 'none');
-    }
-
-    function showMapCarbon() {
-        // Show current graph
-        g.selectAll('.co2_ratio_plot')
-            .transition()
-            .duration(600)
-            .style('opacity', 0)
-            .style('pointer-events', 'none');
-        // Retransitioning of Text
-        g.select('#co2_ratio_path_text')
-            .style('opacity', '0')
-            .style('pointer-events', 'none');
-
-        g.selectAll('#map-2d')
-            .transition()
-            .duration(600)
-            .style('opacity', 1)
-            .style('pointer-events', 'all');
-
-        // Set title
-        d3.selectAll('#map-2d')
-            .select('text')
-            .transition()
-            .duration(600)
-            .text('Countries and Emissions in Million Tonnes of CO2');
-
-        g.selectAll('.map-2d-carbon circle')
-            .transition()
-            .duration(600)
-            .style('opacity', 1)
-            .style('pointer-events', 'all');
 
         g.selectAll('.map-2d-renewables circle')
             .transition()
@@ -365,10 +373,15 @@ var scrollVis = function() {
     }
 
     function showMapRenewables() {
-        g.selectAll('.map-2d-carbon circle')
+        g.selectAll('.co2_ratio_plot')
             .transition()
             .duration(600)
             .style('opacity', 0)
+            .style('pointer-events', 'none');
+
+        // Retransitioning of Text
+        g.select('#co2_ratio_path_text')
+            .style('opacity', '0')
             .style('pointer-events', 'none');
 
         g.selectAll('#map-2d')

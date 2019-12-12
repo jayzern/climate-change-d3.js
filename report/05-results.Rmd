@@ -275,23 +275,28 @@ invest_renew_df$country <- as.character(invest_renew_df$country)
 invest_renew_df$country[invest_renew_df$country == "United States"] <- "US"
 invest_renew_df$country[invest_renew_df$country == "United Kingdom"] <- "UK"
 
+invest_renew_df$continent = c('Asia', 'North America', 'Asia', 'Europe', 'Asia', 'Europe', 'Oceania', 'Europe', 'Europe', 'Europe', 'Europe', 'Africa', 'North America', 'Asia', 'Europe', 'Europe', 'Europe', 'Africa', 'Europe', 'North America', 'Asia', 'Europe')
+
 investment <- ggplot(invest_renew_df) + 
-  aes(x=reorder(country, investment_2018), y=investment_2018) +
+  aes(x=reorder(country, investment_2018), y=investment_2018, fill=continent) +
   geom_col() + 
   ggtitle('Investment on Renewable Energy by Country') + 
   labs(x='Country', y='Investment (Billion USD)') + 
   theme(plot.title = element_text(hjust = 0.5)) + 
   coord_flip()
 
+invest_renew_df$investment_gdp_ratio_2018 <- invest_renew_df$investment_gdp_ratio_2018 *
+1000000000000
+
 investment_ratio <- ggplot(invest_renew_df) + 
-  aes(x=reorder(country, investment_gdp_ratio_2018), y=investment_gdp_ratio_2018) +
+  aes(x=reorder(country, investment_gdp_ratio_2018), y=investment_gdp_ratio_2018, fill=continent) +
   geom_col() + 
   ggtitle('Investment to GDP Ratio per Country') + 
-  labs(x='Country', y='Investment to GDP Ratio (Billion USD/USD)') + 
+  labs(x='Country', y='Investment to GDP Ratio (e-3)') + 
   theme(plot.title = element_text(hjust = 0.5)) +
   coord_flip()
 
-#'China', 'US', 'Japan', 'India', 'Germany', 'UK', 'Australia', 'Spain', 'Netherlands', 'Sweden', 'France', 'South Africa', 'Mexico', 'Vietnam', 'Denmark', 'Belgium', 'Morocco', 'Italy', 'Ukraine', 'Turkey', 'Canada', 'Norway']
+invest_renew_df$investment_gdp_ratio_2018
 
 grid.arrange(investment, investment_ratio, ncol=1)
 ```

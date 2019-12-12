@@ -10,6 +10,96 @@ invest_dev_df <- read.csv("../preprocessed/finance/invest_developing_countries.c
 
 ## Missing Values of Global Trends Related Data
 
+```{r, include=FALSE}
+
+process_space_time_data <- function(data, x_start, x_end, y_start, y_end) {
+
+  # Replace columns names
+  colnames(data) <- data[2,]
+  
+  # Filter countries only
+  data_df <- data[y_start:y_end,x_start:x_end] %>%
+    rename(country = colnames(data)[1]) %>%
+    drop_na() %>%
+    filter(!str_detect(country, "Other")) %>%
+    filter(!str_detect(country, "Total"))
+  
+  # Transpose
+  data_df <- data_df %>% 
+    rownames_to_column %>%
+    gather(variable, value, -rowname) %>% 
+    spread(rowname, value)
+  
+  # Rename
+  colnames(data_df) <- tail(data_df, 1) 
+  
+  # Delete last row, rename
+  data_df <- data_df[-x_end,] %>%
+    mutate_at(vars(-country), funs(as.numeric)) %>%
+    rename(year = `country`)
+  
+  return(data_df)
+}
+
+# Missing data for carbon
+carbon <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Dioxide Emissions")
+carbon_missing_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
+carbon_missing_df <- carbon_missing_df %>% 
+  gather(-year, key = "country", value = "carbon_emissions") %>%
+  mutate(Missing = ifelse(is.na(carbon_emissions), "yes", "no"))
+
+# Data Processing for Hydroelectric
+hydro_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Hydro Generation - TWh")
+hydro_generation_df <- process_space_time_data(hydro_generation, x_start=1, x_end=55, y_start=4, y_end=106)
+hydro_generation_df <- hydro_generation_df %>% 
+  gather(-year, key = "country", value = "generation") %>%
+  mutate(Missing = ifelse(is.na(generation) | generation == 0, "yes", "no"))
+
+# Missing data for wind generation
+wind_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Wind Generation - TWh ")
+wind_generation_df <- process_space_time_data(wind_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+wind_generation_df <- wind_generation_df %>% 
+  gather(-year, key = "country", value = "generation") %>%
+  mutate(Missing = ifelse(is.na(generation), "yes", "no"))
+
+# Missing data for solar generation
+solar_generation <- read_excel("../raw_data/usage/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
+solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+solar_generation_df <- solar_generation_df %>% 
+  gather(-year, key = "country", value = "generation") %>%
+  mutate(Missing = ifelse(is.na(generation), "yes", "no"))
+```
+
+The following datasets from the BP’s Statistical Review of World Energy describes Carbon Emissions and 3 types of renewable energy (Hydro, Wind, Solar), across a space-time scale of different countries versus time. Yellow values indicate that the raw values were missing or N/A; purple values indicate otherwise. These values were used within the interactive component for the radius map sections, showcasing how Emissions and the three Renewables change over time as a map.
+
+Interestingly, we note that in all four graphs, the "USSR" tends to have missing values around the mid 1980s onwards; which is likely due to the fact that the "USSR" dissolved around 1990. In the Carbon, Solar and Wind missing data analysis graphs, the countries placed on the top left have missing values; suggesting that some countries were "late" in investing into renewables. Other notable patterns include that for Hydro electric generation, more countries tend to have missing values, particularly the ones from the middle east or island countries such as Singapore. The latter result may suggest that some countries do not have the capacity produce Hydro electric energy as compared to others.
+
+```{r, fig.height = 10, fig.width = 10}
+ggplot(carbon_missing_df, aes(x = year, y = fct_reorder(country, -carbon_emissions, sum), fill = Missing)) +
+  geom_tile(color = "white") +
+  ggtitle("Carbon Emissions: Missing Data Analysis") +
+  scale_fill_viridis_d() +
+  theme(axis.text.x=element_text(angle=90, hjust=1))
+
+ggplot(hydro_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = Missing)) +
+  geom_tile(color = "white") +
+  ggtitle("Hydro generation: Missing Data Analysis") +
+  scale_fill_viridis_d() +
+  theme(axis.text.x=element_text(angle=90, hjust=1))
+
+ggplot(wind_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = Missing)) +
+  geom_tile(color = "white") +
+  ggtitle("Wind generation: Missing Data Analysis") +
+  scale_fill_viridis_d() +
+  theme(axis.text.x=element_text(angle=90, hjust=1))
+
+ggplot(solar_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = Missing)) +
+  geom_tile(color = "white") +
+  ggtitle("Solar generation: Missing Data Analysis") +
+  scale_fill_viridis_d() +
+  theme(axis.text.x=element_text(angle=90, hjust=1))
+```
+
 ## Missing Values of Finance/Business Related data
 In the following data, there were countries that were dropped from the dataset during the data transformation phase. The data were merged using inner join, for simplicity during the analysis, which automatically removed countries that were not included in both datasets. The specific countries that were dropped during the merge are recorded in detail in the data transformation section for reference. In general, less developed countries from Africa, Asia, Europe, and South America were dropped from the data.
 

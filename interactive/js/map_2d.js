@@ -3,7 +3,8 @@ export function plot_map_2d(data, g) {
     var height = 520;
 
     // One group for the entire chart
-    var chart = g.append('g')
+    var chart = g
+        .append('g')
         .attr('id', 'map-2d')
         .style('opacity', 0);
 
@@ -47,7 +48,7 @@ export function plot_map_2d(data, g) {
 
     // Function to fetch data based on year and type, i.e. renewables
     var getMapData = function(type, year) {
-        return data[type].filter(data => data.year == year)
+        return data[type].filter(data => data.year == year);
     };
 
     // Tool tip for hover hover
@@ -59,7 +60,8 @@ export function plot_map_2d(data, g) {
         .style('opacity', 0);
 
     // Draw 2D map
-    chart.append('g')
+    chart
+        .append('g')
         .attr('class', 'map-2d')
         .selectAll('path')
         .data(data['map2D'].features)
@@ -67,17 +69,17 @@ export function plot_map_2d(data, g) {
         .append('path')
         .attr('fill', 'white')
         .attr('d', d3.geoPath().projection(map2dProjection))
-        .style('stroke', '#000')
+        .style('stroke', '#000');
 
     // Add title
-    chart.append('text')
-         .attr('class', 'map-2d')
-         .attr('x', width / 2)
-         .attr('y', 30)
-         .text('Countries and Renewable Energy Generation by Terawatt-hours')
-         .style('text-anchor', 'middle')
-         .style('font-weight', '800');
-
+    chart
+        .append('text')
+        .attr('class', 'map-2d')
+        .attr('x', width / 2)
+        .attr('y', 30)
+        .text('Countries and Renewable Energy Generation by Terawatt-hours')
+        .style('text-anchor', 'middle')
+        .style('font-weight', '800');
 
     // Initialize data
     var initSolarData = getMapData('solar_generation', '2018');
@@ -85,288 +87,290 @@ export function plot_map_2d(data, g) {
     var initHydroData = getMapData('hydro_generation', '2018');
     var initCarbonData = getMapData('carbon_generation', '2018');
     var initRenewablesData = getMapData('renewables_generation', '2018');
-    console.log(initRenewablesData)
 
     // Draw Circles
-    chart.append('g')
+    chart
+        .append('g')
         .attr('class', 'map-2d-solar')
         .selectAll('circle')
         .data(initSolarData, d => d.country) // Object Constancy map by country
         .enter()
         .append('circle')
-            .attr('class', 'solar')
-            .attr('fill-opacity', 0.5)
-            .attr('r', function(d) {
-                return rScaleMap2dSolar(d.generation);
-            })
-            .attr('transform', function(d) {
-                try {
-                    return (
-                        'translate(' +
-                        map2dProjection([
-                            +data['geoDict'][d.country].LON,
-                            +data['geoDict'][d.country].LAT
-                        ]) +
-                        ')'
-                    );
-                } catch {
-                  // Do something
-                }
-            })
-            .style('stroke', '#000')
-            .style('fill', 'yellow')
-            .on('mouseover', function(d, i) {
-                var coords = map2dProjection([
-                    +data['geoDict'][d.country].LON,
-                    +data['geoDict'][d.country].LAT
-                ]);
-                tooltip
-                    .transition()
-                    .duration(200)
-                    .style('opacity', 0.9);
+        .attr('class', 'solar')
+        .attr('fill-opacity', 0.5)
+        .attr('r', function(d) {
+            return rScaleMap2dSolar(d.generation);
+        })
+        .attr('transform', function(d) {
+            try {
+                return (
+                    'translate(' +
+                    map2dProjection([
+                        +data['geoDict'][d.country].LON,
+                        +data['geoDict'][d.country].LAT
+                    ]) +
+                    ')'
+                );
+            } catch {
+                // Do something
+            }
+        })
+        .style('stroke', '#000')
+        .style('fill', 'yellow')
+        .on('mouseover', function(d, i) {
+            var coords = map2dProjection([
+                +data['geoDict'][d.country].LON,
+                +data['geoDict'][d.country].LAT
+            ]);
+            tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
 
-                tooltip
-                    .html(
-                        d.country +
+            tooltip
+                .html(
+                    d.country +
                         '<br/> Solar (TWh): ' +
                         parseFloat(d.generation).toFixed(2)
-                    )
-                    .style('top', coords[1] + 'px')
-                    .style('left', coords[0] + 'px')
-                    .style('display', 'block');
-            })
-            .on('mouseout', function(d) {
-                tooltip
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 0);
-            })
-            .style('pointer-events', 'none')
-            .style('opacity', 0);
+                )
+                .style('top', coords[1] + 'px')
+                .style('left', coords[0] + 'px')
+                .style('display', 'block');
+        })
+        .on('mouseout', function(d) {
+            tooltip
+                .transition()
+                .duration(500)
+                .style('opacity', 0);
+        })
+        .style('pointer-events', 'none')
+        .style('opacity', 0);
 
-    chart.append('g')
+    chart
+        .append('g')
         .attr('class', 'map-2d-wind')
         .selectAll('circle')
         .data(initWindData, d => d.country) // Object Constancy map by country
         .enter()
         .append('circle')
-            .attr('fill-opacity', 0.5)
-            .attr('r', function(d) {
-                return rScaleMap2dWind(d.generation);
-            })
-            .attr('transform', function(d) {
-                try {
-                    return (
-                        'translate(' +
-                        map2dProjection([
-                            +data['geoDict'][d.country].LON,
-                            +data['geoDict'][d.country].LAT
-                        ]) +
-                        ')'
-                    );
-                } catch {
-                  // Do something
-                }
-            })
-            .style('stroke', '#000')
-            .style('fill', 'gray')
-            .on('mouseover', function(d, i) {
-                var coords = map2dProjection([
-                    +data['geoDict'][d.country].LON,
-                    +data['geoDict'][d.country].LAT
-                ]);
-                tooltip
-                    .transition()
-                    .duration(200)
-                    .style('opacity', 0.9);
+        .attr('fill-opacity', 0.5)
+        .attr('r', function(d) {
+            return rScaleMap2dWind(d.generation);
+        })
+        .attr('transform', function(d) {
+            try {
+                return (
+                    'translate(' +
+                    map2dProjection([
+                        +data['geoDict'][d.country].LON,
+                        +data['geoDict'][d.country].LAT
+                    ]) +
+                    ')'
+                );
+            } catch {
+                // Do something
+            }
+        })
+        .style('stroke', '#000')
+        .style('fill', 'gray')
+        .on('mouseover', function(d, i) {
+            var coords = map2dProjection([
+                +data['geoDict'][d.country].LON,
+                +data['geoDict'][d.country].LAT
+            ]);
+            tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
 
-                tooltip
-                    .html(
-                        d.country +
+            tooltip
+                .html(
+                    d.country +
                         '<br/> Wind (TWh): ' +
                         parseFloat(d.generation).toFixed(2)
-                    )
-                    .style('top', coords[1] + 'px')
-                    .style('left', coords[0] + 'px')
-                    .style('display', 'block');
-            })
-            .on('mouseout', function(d) {
-                tooltip
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 0);
-            })
-            .style('pointer-events', 'none')
-            .style('opacity', 0);
+                )
+                .style('top', coords[1] + 'px')
+                .style('left', coords[0] + 'px')
+                .style('display', 'block');
+        })
+        .on('mouseout', function(d) {
+            tooltip
+                .transition()
+                .duration(500)
+                .style('opacity', 0);
+        })
+        .style('pointer-events', 'none')
+        .style('opacity', 0);
 
-    chart.append('g')
+    chart
+        .append('g')
         .attr('class', 'map-2d-hydro')
         .selectAll('circle')
         .data(initHydroData, d => d.country) // Object Constancy map by country
         .enter()
         .append('circle')
-            .attr('fill-opacity', 0.5)
-            .attr('r', function(d) {
-                return rScaleMap2dHydro(d.generation);
-            })
-            .attr('transform', function(d) {
-                try {
-                    return (
-                        'translate(' +
-                        map2dProjection([
-                            +data['geoDict'][d.country].LON,
-                            +data['geoDict'][d.country].LAT
-                        ]) +
-                        ')'
-                    );
-                } catch {
-                  // Do something
-                }
-            })
-            .style('stroke', '#000')
-            .style('fill', 'blue')
-            .on('mouseover', function(d, i) {
-                var coords = map2dProjection([
-                    +data['geoDict'][d.country].LON,
-                    +data['geoDict'][d.country].LAT
-                ]);
-                tooltip
-                    .transition()
-                    .duration(200)
-                    .style('opacity', 0.9);
+        .attr('fill-opacity', 0.5)
+        .attr('r', function(d) {
+            return rScaleMap2dHydro(d.generation);
+        })
+        .attr('transform', function(d) {
+            try {
+                return (
+                    'translate(' +
+                    map2dProjection([
+                        +data['geoDict'][d.country].LON,
+                        +data['geoDict'][d.country].LAT
+                    ]) +
+                    ')'
+                );
+            } catch {
+                // Do something
+            }
+        })
+        .style('stroke', '#000')
+        .style('fill', 'blue')
+        .on('mouseover', function(d, i) {
+            var coords = map2dProjection([
+                +data['geoDict'][d.country].LON,
+                +data['geoDict'][d.country].LAT
+            ]);
+            tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
 
-                tooltip
-                    .html(
-                        d.country +
+            tooltip
+                .html(
+                    d.country +
                         '<br/> Hydro (TWh): ' +
                         parseFloat(d.generation).toFixed(2)
-                    )
-                    .style('top', coords[1] + 'px')
-                    .style('left', coords[0] + 'px')
-                    .style('display', 'block');
-            })
-            .on('mouseout', function(d) {
-                tooltip
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 0);
-            })
-            .style('pointer-events', 'none')
-            .style('opacity', 0);
+                )
+                .style('top', coords[1] + 'px')
+                .style('left', coords[0] + 'px')
+                .style('display', 'block');
+        })
+        .on('mouseout', function(d) {
+            tooltip
+                .transition()
+                .duration(500)
+                .style('opacity', 0);
+        })
+        .style('pointer-events', 'none')
+        .style('opacity', 0);
 
-
-    chart.append('g')
+    chart
+        .append('g')
         .attr('class', 'map-2d-carbon')
         .selectAll('circle')
         .data(initCarbonData, d => d.country) // Object Constancy map by country
         .enter()
         .append('circle')
-            .attr('class', 'carbon')
-            .attr('fill-opacity', 0.5)
-            .attr('r', function(d) {
-                return rScaleMap2dCarbon(d.generation);
-            })
-            .attr('transform', function(d) {
-                try {
-                    return (
-                        'translate(' +
-                        map2dProjection([
-                            +data['geoDict'][d.country].LON,
-                            +data['geoDict'][d.country].LAT
-                        ]) +
-                        ')'
-                    );
-                } catch {
-                  // Do something
-                }
-            })
-            .style('stroke', '#000')
-            .style('fill', 'black')
-            .on('mouseover', function(d, i) {
-                var coords = map2dProjection([
-                    +data['geoDict'][d.country].LON,
-                    +data['geoDict'][d.country].LAT
-                ]);
-                tooltip
-                    .transition()
-                    .duration(200)
-                    .style('opacity', 0.9);
+        .attr('class', 'carbon')
+        .attr('fill-opacity', 0.5)
+        .attr('r', function(d) {
+            return rScaleMap2dCarbon(d.generation);
+        })
+        .attr('transform', function(d) {
+            try {
+                return (
+                    'translate(' +
+                    map2dProjection([
+                        +data['geoDict'][d.country].LON,
+                        +data['geoDict'][d.country].LAT
+                    ]) +
+                    ')'
+                );
+            } catch {
+                // Do something
+            }
+        })
+        .style('stroke', '#000')
+        .style('fill', 'black')
+        .on('mouseover', function(d, i) {
+            var coords = map2dProjection([
+                +data['geoDict'][d.country].LON,
+                +data['geoDict'][d.country].LAT
+            ]);
+            tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
 
-                tooltip
-                    .html(
-                        d.country +
+            tooltip
+                .html(
+                    d.country +
                         '<br/> Million tonnes of CO2: <br/>' +
                         parseFloat(d.generation).toFixed(2)
-                    )
-                    .style('top', coords[1] + 'px')
-                    .style('left', coords[0] + 'px')
-                    .style('display', 'block');
-            })
-            .on('mouseout', function(d) {
-                tooltip
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 0);
-            })
-            .style('pointer-events', 'none')
-            .style('opacity', 0);
+                )
+                .style('top', coords[1] + 'px')
+                .style('left', coords[0] + 'px')
+                .style('display', 'block');
+        })
+        .on('mouseout', function(d) {
+            tooltip
+                .transition()
+                .duration(500)
+                .style('opacity', 0);
+        })
+        .style('pointer-events', 'none')
+        .style('opacity', 0);
 
-    chart.append('g')
+    chart
+        .append('g')
         .attr('class', 'map-2d-renewables')
         .selectAll('circle')
         .data(initRenewablesData, d => d.country) // Object Constancy map by country
         .enter()
         .append('circle')
-            .attr('class', 'carbon')
-            .attr('fill-opacity', 0.5)
-            .attr('r', function(d) {
-                return rScaleMap2dRenewables(d.generation);
-            })
-            .attr('transform', function(d) {
-                try {
-                    return (
-                        'translate(' +
-                        map2dProjection([
-                            +data['geoDict'][d.country].LON,
-                            +data['geoDict'][d.country].LAT
-                        ]) +
-                        ')'
-                    );
-                } catch {
-                  // Do something
-                }
-            })
-            .style('stroke', '#000')
-            .style('fill', 'green')
-            .on('mouseover', function(d, i) {
-                var coords = map2dProjection([
-                    +data['geoDict'][d.country].LON,
-                    +data['geoDict'][d.country].LAT
-                ]);
-                tooltip
-                    .transition()
-                    .duration(200)
-                    .style('opacity', 0.9);
+        .attr('class', 'carbon')
+        .attr('fill-opacity', 0.5)
+        .attr('r', function(d) {
+            return rScaleMap2dRenewables(d.generation);
+        })
+        .attr('transform', function(d) {
+            try {
+                return (
+                    'translate(' +
+                    map2dProjection([
+                        +data['geoDict'][d.country].LON,
+                        +data['geoDict'][d.country].LAT
+                    ]) +
+                    ')'
+                );
+            } catch {
+                // Do something
+            }
+        })
+        .style('stroke', '#000')
+        .style('fill', 'green')
+        .on('mouseover', function(d, i) {
+            var coords = map2dProjection([
+                +data['geoDict'][d.country].LON,
+                +data['geoDict'][d.country].LAT
+            ]);
+            tooltip
+                .transition()
+                .duration(200)
+                .style('opacity', 0.9);
 
-                tooltip
-                    .html(
-                        d.country +
+            tooltip
+                .html(
+                    d.country +
                         '<br/> Total Renewables (TWh): <br/>' +
                         parseFloat(d.generation).toFixed(2)
-                    )
-                    .style('top', coords[1] + 'px')
-                    .style('left', coords[0] + 'px')
-                    .style('display', 'block');
-            })
-            .on('mouseout', function(d) {
-                tooltip
-                    .transition()
-                    .duration(500)
-                    .style('opacity', 0);
-            })
-            .style('pointer-events', 'none')
-            .style('opacity', 0);
-
+                )
+                .style('top', coords[1] + 'px')
+                .style('left', coords[0] + 'px')
+                .style('display', 'block');
+        })
+        .on('mouseout', function(d) {
+            tooltip
+                .transition()
+                .duration(500)
+                .style('opacity', 0);
+        })
+        .style('pointer-events', 'none')
+        .style('opacity', 0);
 
     // Slider
     var dataTime = d3.range(0, 20).map(function(d) {
@@ -387,11 +391,14 @@ export function plot_map_2d(data, g) {
 
             // If new year then transition
             if (newYear != mapYear) {
-                var newSolarData = getMapData('solar_generation', newYear)
-                var newWindData = getMapData('wind_generation', newYear)
-                var newHydroData = getMapData('hydro_generation', newYear)
-                var newCarbonData = getMapData('carbon_generation', newYear)
-                var newRenewablesData = getMapData('renewables_generation', newYear)
+                var newSolarData = getMapData('solar_generation', newYear);
+                var newWindData = getMapData('wind_generation', newYear);
+                var newHydroData = getMapData('hydro_generation', newYear);
+                var newCarbonData = getMapData('carbon_generation', newYear);
+                var newRenewablesData = getMapData(
+                    'renewables_generation',
+                    newYear
+                );
 
                 // Update Solar
                 //g.select('.map-2d circle')

@@ -4,7 +4,6 @@
  * using reusable charts pattern:
  * http://bost.ocks.org/mike/chart/
  */
-
 import { plot_dry_earth, plot_rich_earth } from './earth.js';
 import {
     plot_line_temp,
@@ -135,14 +134,14 @@ var scrollVis = function() {
         activateFunctions[8] = showMapSolar;
         activateFunctions[9] = showTopCountries;
         activateFunctions[10] = showRichEarth;
-
+        activateFunctions[11] = () => {};
         // updateFunctions are called while
         // in a particular section to update
         // the scroll progress in that section.
         // Most sections do not need to be updated
         // for all scrolling and so are set to
         // no-op functions.
-        for (var i = 0; i < 11; i++) {
+        for (var i = 0; i < 12; i++) {
             updateFunctions[i] = function() {};
         }
     };

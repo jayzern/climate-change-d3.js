@@ -1,5 +1,6 @@
 body {
-    /* background: linear-gradient(to bottom, #202020, #111119) !important; */
+    height: 100%;
+    padding-bottom: 20px;
 }
 
 .tooltipscatter {
@@ -9,6 +10,22 @@ body {
     background-color: rgba(224, 224, 224, 1);
     border-radius: 5px;
     /* pointer-events: none; */
+}
+
+.scroll_link {
+    display: block;
+    margin-left: -3%;
+    margin-top: 5%;
+}
+
+.scroll_link img {
+    opacity: 0.2;
+    width: 40px;
+    transition: opacity 0.2s ease;
+}
+
+.scroll_link img:hover {
+    opacity: 0.6;
 }
 
 /*********** START RAIN ANIMATION ************/
@@ -113,18 +130,18 @@ body {
     right: 120%;
     width: 20%;
     height: 6%;
-    opacity: 0.4;
+    opacity: 0.25;
 }
 
 .cloud-1 {
     top: -50px;
-    opacity: 0.35;
+    opacity: 0.21;
     animation: moveclouds 30s linear infinite;
 }
 
 .cloud-2 {
     top: 200px;
-    opacity: 0.3;
+    opacity: 0.17;
     transform: scale(0.8);
     animation: moveclouds 45s linear infinite;
     animation-delay: -35s;
@@ -132,7 +149,7 @@ body {
 
 .cloud-3 {
     top: 100px;
-    opacity: 0.2;
+    opacity: 0.15;
     transform: scale(0.6);
     animation: moveclouds 40s linear infinite;
 }

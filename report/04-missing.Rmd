@@ -6,9 +6,11 @@ invest_renew_df <- read.csv("../preprocessed/finance/invest_to_renewable.csv")
 renew_gdp_pop_df <- read.csv("../preprocessed/finance/renew_gdp_population.csv")
 invest_dev_df <- read.csv("../preprocessed/finance/invest_developing_countries.csv")
 ```
-## Missing Values of Emission Related Data
-
 ## Missing Values of Global Trends Related Data
+
+Although the BP Global Trends dataset provides a comprehensive report on renewable energy and emission trends at the country level for the past few decades, it has missing data for certain countries. Most notably, the BP dataset doesn't provide specific country data for African countries. Rather, the BP dataset aggregates these countries into "Western Africa", "Eastern Africa", "Southern Africa", and "Northern Africa". This is also the case with some small Asian Pacific, Caribbean, European, and Middle Eastern countries. Accordingly, there is no country level data for the small countries located in these regions as well as most of Africa.
+
+
 
 ## Missing Values of Finance/Business Related data
 In the following data, there were countries that were dropped from the dataset during the data transformation phase. The data were merged using inner join, for simplicity during the analysis, which automatically removed countries that were not included in both datasets. The specific countries that were dropped during the merge are recorded in detail in the data transformation section for reference. In general, less developed countries from Africa, Asia, Europe, and South America were dropped from the data.

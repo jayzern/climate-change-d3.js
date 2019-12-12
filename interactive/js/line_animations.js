@@ -356,15 +356,15 @@ export function plot_line_co2_ratio(data, g) {
         .attr('id', 'co2_ratio_path_text')
         .attr(
             'transform',
-            `translate(${width - margin.right + 5}, ${yScale(
+            `translate(${width - margin.right - 100}, ${yScale(
                 last_point[last_point.length - 1].annual_emission_rate
-            )})`
+            ) + 20})`
         )
         .attr('text-anchor', 'start')
         .attr('font-size', '12')
         .style('fill', 'lightblue')
         .style('opacity', '0')
-        .text('CO2 Emission Rate');
+        .text('CO2 Emission-Energy Ratio');
     //.transition()
     //.ease(d3.easeExp,100)
     //.duration(7000)
@@ -413,5 +413,5 @@ export function plot_line_co2_ratio(data, g) {
         .attr('x', width / 2)
         .attr('y', margin.top)
         .style('text-anchor', 'middle')
-        .text('Annual Decrease of CO2 Emission Rates');
+        .text('Annual Decrease of CO2 Emission-Energy Ratios');
 }

@@ -4,11 +4,11 @@
 
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>Chapter 4 Missing values | Impact of Renewable Energy</title>
-  <meta name="description" content="Chapter 4 Missing values | Impact of Renewable Energy" />
+  <title>Chapter 4 Missing values | Renewable Movements</title>
+  <meta name="description" content="Chapter 4 Missing values | Renewable Movements" />
   <meta name="generator" content="bookdown 0.16 and GitBook 2.6.7" />
 
-  <meta property="og:title" content="Chapter 4 Missing values | Impact of Renewable Energy" />
+  <meta property="og:title" content="Chapter 4 Missing values | Renewable Movements" />
   <meta property="og:type" content="book" />
   
   
@@ -16,7 +16,7 @@
   
 
   <meta name="twitter:card" content="summary" />
-  <meta name="twitter:title" content="Chapter 4 Missing values | Impact of Renewable Energy" />
+  <meta name="twitter:title" content="Chapter 4 Missing values | Renewable Movements" />
   
   
   
@@ -171,7 +171,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
       <div class="body-inner">
         <div class="book-header" role="navigation">
           <h1>
-            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Impact of Renewable Energy</a>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Renewable Movements</a>
           </h1>
         </div>
 
@@ -184,13 +184,39 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="missing-values-of-global-trends-related-data" class="section level2">
 <h2><span class="header-section-number">4.1</span> Missing Values of Global Trends Related Data</h2>
 <p>Although the BP Global Trends dataset provides a comprehensive report on renewable energy and emission trends at the country level for the past few decades, it has missing data for certain countries. Most notably, the BP dataset doesn’t provide specific country data for African countries. Rather, the BP dataset aggregates these countries into “Western Africa”, “Eastern Africa”, “Southern Africa”, and “Northern Africa”. This is also the case with some small Asian Pacific, Caribbean, European, and Middle Eastern countries. Accordingly, there is no country level data for the small countries located in these regions as well as most of Africa.</p>
+<p>The BP’s Statistical Review of World Energy describes Carbon Emissions and 3 types of renewable energy (Hydro, Wind, Solar), across a space-time scale of different countries versus time. Yellow values indicate that the raw values were missing or N/A; purple values indicate otherwise. These values were used within the interactive component for the radius map sections, showcasing how Emissions and the three Renewables change over time as a map.</p>
+<p>Interestingly, we note that in all four graphs, the “USSR” tends to have missing values around the mid 1980s onwards; which is likely due to the fact that the “USSR” dissolved around 1990. In the Carbon, Solar and Wind missing data analysis graphs, the countries placed on the top left have missing values; suggesting that some countries were “late” in investing into renewables. Other notable patterns include that for Hydro electric generation, more countries tend to have missing values, particularly the ones from the middle east or island countries such as Singapore. The latter result may suggest that some countries do not have the capacity produce Hydro electric energy as compared to others.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">ggplot</span>(carbon_missing_df, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> <span class="kw">fct_reorder</span>(country, <span class="op">-</span>carbon_emissions, sum), <span class="dt">fill =</span> Missing)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-2" title="2"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Carbon Emissions: Missing Data Analysis&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="st">  </span><span class="kw">scale_fill_viridis_d</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb1-5" title="5"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-2-1.png" width="960" /></p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1"><span class="kw">ggplot</span>(hydro_generation_df, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> <span class="kw">fct_reorder</span>(country, <span class="op">-</span>generation, sum), <span class="dt">fill =</span> Missing)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-2" title="2"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Hydro generation: Missing Data Analysis&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-4" title="4"><span class="st">  </span><span class="kw">scale_fill_viridis_d</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb2-5" title="5"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-2-2.png" width="960" /></p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1"><span class="kw">ggplot</span>(wind_generation_df, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> <span class="kw">fct_reorder</span>(country, <span class="op">-</span>generation, sum), <span class="dt">fill =</span> Missing)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-2" title="2"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Wind generation: Missing Data Analysis&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-4" title="4"><span class="st">  </span><span class="kw">scale_fill_viridis_d</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb3-5" title="5"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-2-3.png" width="960" /></p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" title="1"><span class="kw">ggplot</span>(solar_generation_df, <span class="kw">aes</span>(<span class="dt">x =</span> year, <span class="dt">y =</span> <span class="kw">fct_reorder</span>(country, <span class="op">-</span>generation, sum), <span class="dt">fill =</span> Missing)) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-2" title="2"><span class="st">  </span><span class="kw">geom_tile</span>(<span class="dt">color =</span> <span class="st">&quot;white&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-3" title="3"><span class="st">  </span><span class="kw">ggtitle</span>(<span class="st">&quot;Solar generation: Missing Data Analysis&quot;</span>) <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-4" title="4"><span class="st">  </span><span class="kw">scale_fill_viridis_d</span>() <span class="op">+</span></a>
+<a class="sourceLine" id="cb4-5" title="5"><span class="st">  </span><span class="kw">theme</span>(<span class="dt">axis.text.x=</span><span class="kw">element_text</span>(<span class="dt">angle=</span><span class="dv">90</span>, <span class="dt">hjust=</span><span class="dv">1</span>))</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-2-4.png" width="960" /></p>
 </div>
 <div id="missing-values-of-financebusiness-related-data" class="section level2">
 <h2><span class="header-section-number">4.2</span> Missing Values of Finance/Business Related data</h2>
 <p>In the following data, there were countries that were dropped from the dataset during the data transformation phase. The data were merged using inner join, for simplicity during the analysis, which automatically removed countries that were not included in both datasets. The specific countries that were dropped during the merge are recorded in detail in the data transformation section for reference. In general, less developed countries from Africa, Asia, Europe, and South America were dropped from the data.</p>
 <div id="missing-values-of-invest_to_renewable.csv" class="section level3">
 <h3><span class="header-section-number">4.2.1</span> Missing Values of invest_to_renewable.csv</h3>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1">invest_renew_df<span class="op">$</span>country</a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">invest_renew_df<span class="op">$</span>country</a></code></pre></div>
 <pre><code>##  [1] China          United States  Japan          Germany       
 ##  [5] India          United Kingdom Australia      Spain         
 ##  [9] Netherlands    Sweden         France         South Africa  
@@ -207,9 +233,9 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div id="missing-values-of-invest_developing_countries.csv" class="section level3">
 <h3><span class="header-section-number">4.2.3</span> Missing Values of invest_developing_countries.csv</h3>
 <p>The following graph shows the missing data patterns that appeared in the invest_developing_countries.csv data. Note that the value in each column of the data represents the total investment that was made towards a developing country in million USD of that year.</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">invest_dev_df[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
-<a class="sourceLine" id="cb3-2" title="2"><span class="kw">visna</span>(invest_dev_df[<span class="dv">4</span><span class="op">:</span><span class="dv">20</span>])</a></code></pre></div>
-<p><img src="_main_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">invest_dev_df[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
+<a class="sourceLine" id="cb7-2" title="2"><span class="kw">visna</span>(invest_dev_df[<span class="dv">4</span><span class="op">:</span><span class="dv">20</span>])</a></code></pre></div>
+<p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <p>Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This means that not all renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries that had initial investments, but did not have another round of investments until a later year.</p>
 
 </div>

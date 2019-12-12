@@ -168,9 +168,6 @@ parcoords::parcoords(primary_energy_consumption_df,
 ```{r, fig.height = 10, fig.width = 10}
 # Missing data analysis on Carbon Emissions
 process_space_time_data <- function(data, x_start, x_end, y_start, y_end) {
-  # Super useful function to convert Space-Time data into "almost" tidy data
-  # "almost" tidy because countries can still apply gather by key-value
-  # But this is easier for D3
 
   # Replace columns names
   colnames(data) <- data[2,]
@@ -207,60 +204,48 @@ carbon <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Carbon Di
 carbon_missing_df <- process_space_time_data(carbon, x_start=1, x_end=55, y_start=4, y_end=107)
 carbon_missing_df <- carbon_missing_df %>% 
   gather(-year, key = "country", value = "carbon_emissions") %>%
-  mutate(missing_or_zero = ifelse(is.na(carbon_emissions) | carbon_emissions == 0, "yes", "no"))
-ggplot(carbon_missing_df, aes(x = year, y = fct_reorder(country, -carbon_emissions, sum), fill = missing_or_zero)) +
+  mutate(Missing = ifelse(is.na(carbon_emissions), "yes", "no"))
+ggplot(carbon_missing_df, aes(x = year, y = fct_reorder(country, -carbon_emissions, sum), fill = Missing)) +
   geom_tile(color = "white") +
   ggtitle("Carbon") +
   scale_fill_viridis_d() + # discrete scale
-  theme_bw()
+  theme(axis.text.x=element_text(angle=90, hjust=1))
 
-# Missing data for solar generation
-solar_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
-solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
-solar_generation_df <- solar_generation_df %>% 
+# Data Processing for Hydroelectric
+hydro_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Hydro Generation - TWh")
+hydro_generation_df <- process_space_time_data(hydro_generation, x_start=1, x_end=55, y_start=4, y_end=106)
+hydro_generation_df <- hydro_generation_df %>% 
   gather(-year, key = "country", value = "generation") %>%
-  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
-ggplot(solar_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
+  mutate(Missing = ifelse(is.na(generation) | generation == 0, "yes", "no"))
+ggplot(hydro_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = Missing)) +
   geom_tile(color = "white") +
-  ggtitle("Solar generation") +
+  ggtitle("Hydro generation") +
   scale_fill_viridis_d() + # discrete scale
-  theme_bw()
+  theme(axis.text.x=element_text(angle=90, hjust=1))
 
 # Missing data for wind generation
 wind_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Wind Generation - TWh ")
 wind_generation_df <- process_space_time_data(wind_generation, x_start=1, x_end=55, y_start=4, y_end=108)
 wind_generation_df <- wind_generation_df %>% 
   gather(-year, key = "country", value = "generation") %>%
-  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
-ggplot(wind_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
+  mutate(Missing = ifelse(is.na(generation), "yes", "no"))
+ggplot(wind_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = Missing)) +
   geom_tile(color = "white") +
   ggtitle("Wind generation") +
   scale_fill_viridis_d() + # discrete scale
-  theme_bw()
+  theme(axis.text.x=element_text(angle=90, hjust=1))
 
-# Missing data for biomass generation
-biomass_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Geo Biomass Other - TWh")
-biomass_generation_df <- process_space_time_data(biomass_generation, x_start=1, x_end=55, y_start=4, y_end=108)
-biomass_generation_df <- biomass_generation_df %>% 
+# Missing data for solar generation
+solar_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Solar Generation - TWh")
+solar_generation_df <- process_space_time_data(solar_generation, x_start=1, x_end=55, y_start=4, y_end=108)
+solar_generation_df <- solar_generation_df %>% 
   gather(-year, key = "country", value = "generation") %>%
-  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
-ggplot(biomass_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
+  mutate(Missing = ifelse(is.na(generation), "yes", "no"))
+ggplot(solar_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = Missing)) +
   geom_tile(color = "white") +
-  ggtitle("Biomass generation") +
+  ggtitle("Solar generation") +
   scale_fill_viridis_d() + # discrete scale
-  theme_bw()
-
-# Missing data for biofuel generation
-biofuel_generation <- read_excel("data/bp-stats-review-2019-all-data.xlsx", sheet="Biofuels Production - Kboed")
-biofuel_generation_df <- process_space_time_data(biofuel_generation, x_start=1, x_end=30, y_start=4, y_end=43)
-biofuel_generation_df <- biofuel_generation_df %>% 
-  gather(-year, key = "country", value = "generation") %>%
-  mutate(missing_or_zero = ifelse(is.na(generation) | generation == 0, "yes", "no"))
-ggplot(biofuel_generation_df, aes(x = year, y = fct_reorder(country, -generation, sum), fill = missing_or_zero)) +
-  geom_tile(color = "white") +
-  ggtitle("Biofuel generation") +
-  scale_fill_viridis_d() + # discrete scale
-  theme_bw()
+  theme(axis.text.x=element_text(angle=90, hjust=1))
 
 ```
 

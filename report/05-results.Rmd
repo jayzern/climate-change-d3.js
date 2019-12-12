@@ -11,6 +11,8 @@ df <- read.csv("../preprocessed/usage/processed.csv")
 invest_renew_df <- read.csv("../preprocessed/invest_to_renewable.csv")
 renew_gdp_pop_df <- read.csv("../preprocessed/renew_gdp_population.csv")
 invest_dev_df <- read.csv("../preprocessed/invest_developing_countries.csv")
+num_business_df <- read.csv("../preprocessed/num_business.csv")
+industrial_production_df <- read.csv("../preprocessed/industrial_production_growth_rate.csv")
 ```
 
 ## Emissions and Renewables
@@ -373,3 +375,54 @@ ggplot(invest_dev_df) +
   theme(plot.title = element_text(hjust = 0.5)) +
   scale_colour_brewer(palette="Set3")
 ```
+The above line graph consist of countries that had a cumulative invested sum of more than 2,000 Million USD. It seems that from 2000 to 2016, countries from Asia and Africa were invested in highly for renewable energy from around the world. There seems to be a large amount of investment to Pakistan in 2015, making Pakistan the country that was most invested in for renewable energy. Regardless of being a developed country, China is has been invested by other countries for renewable energy. 
+
+### Is there a relationship between the number of companies (headquarters) and renewable energy ratios?
+
+Below is a plot of the number of headquarters of companies and the renewable energy ratios.
+```{r}
+x <- list(
+  title = "Business Count"
+)
+  
+y <- list(
+  title = "Renewable Energy Ratio"
+)
+  
+num_business_df %>% 
+  plot_ly(x = ~num_business_2018, y = ~renew_ratio_2018, text=~country) %>% 
+  layout(title='Business Count and Renewable Energy Ratio 2018', xaxis=x, yaxis=y)
+```
+
+```{r}
+x_num_business <- num_business_df %>% select(num_business_2018)
+y_num_business<- num_business_df %>% select(renew_ratio_2018)
+cor(x_num_business, y_num_business)
+```
+
+There seems to be a weak correlation between the number of businesses in a country and the renewable energy ratio. This may be because the number of businesses have an affect on how much people are making profit, in other words, the GDP per capita. 
+
+### Is there a relationship between manufacturing (Industrial Production Rate) and renewable energy ratios? 
+
+Below is a dot plot of the industrial production rate growth and the renewable energy ratios of each country.
+```{r}
+x <- list(
+  title = "Industrial Production Growth Rate"
+)
+  
+y <- list(
+  title = "Renewable Energy Ratio"
+)
+  
+industrial_production_df %>% 
+  plot_ly(x = ~production_growth_rate_2017, y = ~renew_ratio_2017, text=~country) %>% 
+  layout(title='Industrial Production Growth Rate and Renewable Energy Ratio 2017', xaxis=x, yaxis=y)
+```
+
+```{r}
+x_industrial_production <- industrial_production_df %>% select(production_growth_rate_2017)
+y_industrial_production <- industrial_production_df %>% select(renew_ratio_2017)
+cor(x_industrial_production, y_industrial_production)
+```
+
+There seems to be no correlation between the growth rate of industrial production and the renewable energy ratio. This is an unpredicted result because generally in locations with industrial production, it can be assumed that a large amount of electricity is needed, creating demands for more electricity such as renewable energy sources.

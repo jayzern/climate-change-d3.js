@@ -1,3 +1,108 @@
+--- 
+title: "Impact of Renewable Energy"
+author: "Timothy Huang, Jay Zern Ng, Yuki Nishimura"
+date: "`r Sys.Date()`"
+site: bookdown::bookdown_site
+---
+
+# Introduction
+
+As the human population grows ever larger, climate change continually becomes a more pressing issue. Today, more people than ever are backing and contributing to the movement for a greener planet, and a huge factor for this movement’s growth is the increase in awareness for climate change. Even compared to a few years ago, there are more news articles available to help start conversations about climate change. As more media outlets begin talking about the green movement, more and more people are becoming educated and motivated to help make a change. 
+
+Interestingly, a lot of the existing data and science about climate change have always been around. However, these findings were not always easily accessible to the general population without the help of media. Producing scientific research is not enough to get people talking about climate change; people have to be emotionally moved.
+
+Our team was inspired by Bloomberg Businessweek’s visualization: [“What’s Really Warming the World?”](https://www.bloomberg.com/graphics/2015-whats-warming-the-world/). From a technical standpoint, the visualization is just a basic line plot on very standard data. However, the way that the underlying message is framed and presented produces a very impactful and accessible visualization. The animation and supporting text help display a very logical progression of thoughts to viewers, delivering a message to viewers at a more emotional level. This visualization motivated our team to take advantage of the vast available data on climate change to produce a tool that presents our findings from a human-centered standpoint in hopes of inspiring others to join the push for a greener world.
+
+Our team chose to focus on renewable energy. In this study, we examined the usage of renewable energy sources at the country level over time and studied relationships between renewables usage, emissions, and financial states. Through our findings and visualizations, we hope to generate an optimistic sentiment by presenting the positive effects of switching to renewables and encourage people to continue fighting towards a renewable future.
+
+
+
+<!--chapter:end:index.Rmd-->
+
+# Data sources
+
+Our study involves combining and processing several datasets from different sources listed below:
+
+- [BP’s Statistical Review of World Energy](https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy.html):
+Contains energy data at the country level split by energy sources (oil, gas, coal, nuclear, solar, wind, biofuels, etc) and CO2 emissions data from 1965 to 2018.
+
+- [Thematic Mapping World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php)
+Provides shape file polygon data for country borders used for plotting as well as country metadata such as ISO codes, land area, population, etc.
+
+- [UN Region Codelist](https://apps.who.int/gho/data/node.metadata.UNREGION?lang=en):
+Provides mapping for region codes to region names
+
+- [International Monetary Fund](https://www.imf.org/en/Data):
+Provides a range of time series data for economic and financial indicators.
+
+- [The World Bank’s Data Bank](https://databank.worldbank.org/home):
+Provides a collection of time series data for various topics around the world, such as World Development Indicators, Statistical Capacity Indicators, Educational Statistics, Gender Statistics, etc.
+
+- [Global Finance’s Global Data](https://www.gfmag.com/global-data/):
+Provides economic data for  finance and economics,  and non-economic data for politics and social measures.
+
+- [Statista](https://www.statista.com/):
+Provides all kinds of business data, such as social media, e-commerce, gaming, film industry, etc. 
+
+- [Sustainable Development Goals](http://www.sdg.org/#catalog):
+Provides SDG related data sources to aid for evidence-based decision-making and advocacy.
+
+- [NAICS Association](https://www.naics.com/business-lists/counts-by-country/):
+Provides data regarding different businesses around the world.
+
+- [Central Intelligence Agency’s World Factbook](https://www.cia.gov/library/publications/resources/the-world-factbook/):
+Provides information on the history, people and society, government, economy, energy, geography, communications, transportation, military, and transnational issues for 267 world entities.
+
+<!--chapter:end:02-data.Rmd-->
+
+# Data transformation
+
+Data cleaning and processing was done separately in Python using [pandas](https://pandas.pydata.org/). The preprocessing scripts can be found [here](https://github.com/15huangtimothy/edav_final_proj/tree/master/preprocessed/scripts).
+
+The main dataset used in this project was [BP’s Stbookdown::render_book("index.Rmd")atistical Review of World Energy](https://www.bp.com/en/global/corporate/energy-economics/statistical-review-of-world-energy.html). This data is a large Excel file containing 73 separate sheets of data on emissions, energy generation, energy consumption, and supplemental energy information. The energy data were split up by energy sources into different sheets. A large part of the preprocessing transformations involved selecting and extracting necessary information from specific sheets and combining the data into a single dataframe.
+
+Furthermore, the BP dataset does not contain any geometric geographical information about countries. Thus, data from the [Thematic Mapping World Borders Dataset](http://thematicmapping.org/downloads/world_borders.php) was joined with the main dataframe to provide country metadata as well as polygon data for generating map plots. A major issue during this process was that country names were not identical between the BP and the World Borders dataset. For instance, the United States was listed as "US" in the BP dataset, but as "United States" in the World Borders dataset. Thus, data cleaning was conducted to match up country names and minimize data loss during the join operation.
+
+
+<!--chapter:end:03-cleaning.Rmd-->
+
+# Missing values
+```{r setup, include=FALSE}
+library(mi)
+library(extracat)
+invest_renew_df <- read.csv("../preprocessed/finance/invest_to_renewable.csv")
+renew_gdp_pop_df <- read.csv("../preprocessed/finance/renew_gdp_population.csv")
+invest_dev_df <- read.csv("../preprocessed/finance/invest_developing_countries.csv")
+```
+## Missing Values of Emission Related Data
+
+## Missing Values of Global Trends Related Data
+
+## Missing Values of Finance/Business Related data
+In the following data, there were countries that were dropped from the dataset during the data transformation phase. The data were merged using inner join, for simplicity during the analysis, which automatically removed countries that were not included in both datasets. The specific countries that were dropped during the merge are recorded in detail in the data transformation section for reference. In general, less developed countries from Africa, Asia, Europe, and South America were dropped from the data.
+
+### Missing Values of invest_to_renewable.csv
+```{r}
+invest_renew_df$country
+```
+There are no missing values in this data, but the data only includes 21 relatively developed countries. Therefore, there are many other countries that were not included in this data that need to be considered for a more precise analysis.
+
+### Missing Values of renew_gdp_population.csv, num_business.csv, industrial_production_growth_rate.csv
+
+There are also no missing values in these data, but as stated above, there were countries that were dropped during the data transformation phase.
+
+### Missing Values of invest_developing_countries.csv 
+The following graph shows the missing data patterns that appeared in the invest_developing_countries.csv data. Note that the value in each column of the data represents the total investment that was made towards a developing country in million USD of that year.
+
+```{r}
+invest_dev_df[1] <- NULL
+visna(invest_dev_df[4:20])
+```
+
+Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This may mean that not tall renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries where there were initial investments, but did not have another round of investments until a later year.
+
+<!--chapter:end:04-missing.Rmd-->
+
 ---
 output:
   html_document: default
@@ -423,3 +528,17 @@ cor(x_industrial_production, y_industrial_production)
 ```
 
 There seems to be no correlation between the growth rate of industrial production and the renewable energy ratio. This is an unpredicted result because generally in locations with industrial production, it can be assumed that a large amount of electricity is needed, creating demands for more electricity such as renewable energy sources.
+
+<!--chapter:end:05-results.Rmd-->
+
+# Interactive component
+
+
+
+<!--chapter:end:06-interactive.Rmd-->
+
+# Conclusion
+
+
+<!--chapter:end:07-conclusion.Rmd-->
+

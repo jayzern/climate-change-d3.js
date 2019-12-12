@@ -41,5 +41,3 @@ var makeItRain = function() {
 };
 
 makeItRain();
-
-// Cloud code adapted from https://codepen.io/bbilginn/pen/ctKxu

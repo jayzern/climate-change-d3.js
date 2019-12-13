@@ -24,7 +24,7 @@
 <meta name="author" content="Timothy Huang, Jay Zern Ng, Yuki Nishimura" />
 
 
-<meta name="date" content="2019-12-12" />
+<meta name="date" content="2019-12-13" />
 
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -236,7 +236,7 @@ code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warni
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1">invest_dev_df[<span class="dv">1</span>] &lt;-<span class="st"> </span><span class="ot">NULL</span></a>
 <a class="sourceLine" id="cb7-2" data-line-number="2"><span class="kw">visna</span>(invest_dev_df[<span class="dv">4</span><span class="op">:</span><span class="dv">20</span>])</a></code></pre></div>
 <p><img src="_main_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<p>Most of the rows in the dataset seem to have no missing value. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This means that not all renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries that had initial investments, but did not have another round of investments until a later year.</p>
+<p>The most frequent missing data pattern was one where all of the values were missing. This may be because there are a few countries that are greatly suited for renewable energy generation, and most countries are not able to gather attention for investments. The next frequent pattern was where the rows in the dataset have no missing values. Regarding the rows that have missing values, there are many different types of patterns of missing data. In general, a gradual decrease in the number of missing values could be seen as the years progress. This means that not all renewable energy related investments started as early as 2000. Additionally, there are patterns where there are no missing values in the beginning, but have missing values in the middle, and have no missing values again at the end. These patterns may be showing countries that had initial investments, but did not have another round of investments until a later year.</p>
 
 </div>
 </div>

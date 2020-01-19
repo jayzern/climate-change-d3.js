@@ -1,6 +1,6 @@
-# edav_final_proj
+# Climate Change Visualization
 
-Introduction
+## Introduction
 
 As the human population grows ever larger, climate change continually becomes a more pressing issue. Today, more people than ever are backing and contributing to the movement for a greener planet, and a huge factor for this movement’s growth is the increase in awareness for climate change. Even compared to a few years ago, there are more news articles available to help start conversations about climate change. As more media outlets begin talking about the green movement, more and more people are becoming educated and motivated to help make a change. 
 
